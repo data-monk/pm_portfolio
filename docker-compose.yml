@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  # ── React Frontend (Nginx) ───────────────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: portfolio_client
+    ports:
+      - '80:80'
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+
+  # ── Node/Express Backend ─────────────────────────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: portfolio_server
+    environment:
+      PORT: 5000
+      CLIENT_ORIGIN: http://localhost
+      DB_PATH: /data/portfolio.db
+    volumes:
+      - db_data:/data
+    expose:
+      - '5000'
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  portfolio_net:
+    driver: bridge
