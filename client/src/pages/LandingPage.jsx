@@ -84,12 +84,6 @@ export default function LandingPage() {
             >
               View Projects
             </a>
-            <a
-              href="mailto:hello@example.com"
-              className="px-6 py-2.5 rounded-full border border-slate-700 text-slate-300 text-sm hover:border-neon-blue/50 hover:text-white transition-all duration-200"
-            >
-              Get in Touch
-            </a>
           </div>
         </div>
       </section>

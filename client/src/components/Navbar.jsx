@@ -29,12 +29,6 @@ export default function Navbar() {
           >
             About
           </a>
-          <a
-            href="mailto:hello@example.com"
-            className="px-4 py-1.5 rounded-full border border-neon-blue/30 text-neon-blue hover:bg-neon-blue/10 transition-all duration-200"
-          >
-            Contact
-          </a>
         </div>
       </div>
     </nav>
