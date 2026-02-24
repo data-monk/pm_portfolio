@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const appsRouter = require('./routes/apps')
+const raasRouter = require('./routes/raas')
 
 const app = express()
 const PORT = process.env.PORT || 5001
@@ -12,6 +13,7 @@ app.use(express.json())
 
 // Routes
 app.use('/api/apps', appsRouter)
+app.use('/api/raas', raasRouter)
 
 // Health check
 app.get('/api/health', (req, res) => {

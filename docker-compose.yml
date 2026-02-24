@@ -25,16 +25,47 @@ services:
       PORT: 5000
       CLIENT_ORIGIN: http://localhost
       DB_PATH: /data/portfolio.db
+      POSTGRES_URL: postgresql://raas_user:${POSTGRES_PASSWORD}@postgres:5432/raas
+      JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+      PINECONE_INDEX: ${PINECONE_INDEX}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
     volumes:
       - db_data:/data
     expose:
       - '5000'
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+
+  # ── Postgres (RaaS) ──────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: portfolio_postgres
+    environment:
+      POSTGRES_DB: raas
+      POSTGRES_USER: raas_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./database/raas-schema.sql:/docker-entrypoint-initdb.d/raas-schema.sql
+    expose:
+      - '5432'
     restart: unless-stopped
     networks:
       - portfolio_net
 
 volumes:
   db_data:
+    driver: local
+  pg_data:
     driver: local
 
 networks:

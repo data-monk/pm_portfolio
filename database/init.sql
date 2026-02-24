@@ -29,4 +29,12 @@ VALUES
     '/apps/app-2',
     '["React","Claude API","Express","WebSockets"]',
     2
+  ),
+  (
+    'RAG as a Service',
+    'Multi-tenant knowledge base platform: connect a Google Drive folder, auto-ingest documents into Pinecone, manage system prompts, and run grounded research queries with full source citations.',
+    NULL,
+    '/apps/raas',
+    '["Pinecone","Claude Haiku","OpenAI Embeddings","Google Drive","Postgres"]',
+    3
   );

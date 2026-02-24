@@ -21,6 +21,15 @@ const FALLBACK_APPS = [
     route: '/apps/app-2',
     tags: ['React', 'Claude API', 'Express', 'WebSockets'],
   },
+  {
+    id: 3,
+    title: 'RAG as a Service',
+    summary:
+      'Multi-tenant knowledge base platform: connect a Google Drive folder, auto-ingest documents into Pinecone, manage system prompts, and run grounded research queries with full source citations.',
+    imageUrl: null,
+    route: '/apps/raas',
+    tags: ['Pinecone', 'Claude Haiku', 'OpenAI Embeddings', 'Google Drive', 'Postgres'],
+  },
 ]
 
 export default function LandingPage() {
