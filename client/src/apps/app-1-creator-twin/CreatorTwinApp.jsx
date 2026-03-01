@@ -5,7 +5,7 @@ import VideoPanel from './components/VideoPanel'
 import CommentPanel from './components/CommentPanel'
 import ContextDrawer from './components/ContextDrawer'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001'
+const API_BASE = import.meta.env.DEV ? 'http://localhost:5001' : ''
 
 let nextId = 1
 
