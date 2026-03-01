@@ -1,48 +1,62 @@
 import { useState, useCallback } from 'react'
-import PersonaSelector from './components/PersonaSelector'
-import ControlPanel from './components/ControlPanel'
-import VideoPanel from './components/VideoPanel'
-import CommentPanel from './components/CommentPanel'
 import ContextDrawer from './components/ContextDrawer'
+import ViewTabStrip from './components/ViewTabStrip'
+import FollowerView from './views/FollowerView'
+import CreatorView from './views/CreatorView'
+import { PERSONA_MAP } from './data/personas'
 
 const API_BASE = import.meta.env.DEV ? 'http://localhost:5001' : ''
 
 let nextId = 1
 
 /**
- * AI Creator Twin — Top-level layout component.
- *
- * TikTok-inspired split-screen: left = video panel, right = comment thread.
- * RAG pipeline: embed comment → retrieve from Pinecone → generate reply via GPT-4o-mini.
+ * AI Creator Twin — Top-level state owner.
+ * Renders ViewTabStrip + conditional FollowerView or CreatorView.
+ * ContextDrawer lives at root so both views can trigger it.
  */
 export default function CreatorTwinApp() {
+  const [activeView, setActiveView] = useState('follower')
   const [personaId, setPersonaId] = useState('tech')
   const [autoReply, setAutoReply] = useState(true)
   const [confidenceThreshold, setConfidenceThreshold] = useState(50)
 
-  // Thread: array of { id, comment, status, reply, confidence, retrievedContext }
+  // Thread: { id, comment, status, reply, confidence, retrievedContext, editedReply, approved }
   const [thread, setThread] = useState([])
+
+  // Creator context: injected into every reply request
+  const [creatorContext, setCreatorContext] = useState({
+    transcript: PERSONA_MAP['tech'].videoDescription,
+    notes: '',
+  })
 
   // Context drawer state
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [drawerItem, setDrawerItem] = useState(null)
 
-  // Clear thread when persona changes
   function handlePersonaChange(newId) {
     setPersonaId(newId)
     setThread([])
+    setCreatorContext((prev) => ({ ...prev, transcript: PERSONA_MAP[newId].videoDescription }))
+  }
+
+  function handleContextChange(field, value) {
+    setCreatorContext((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleSubmitComment = useCallback(async (comment) => {
     const id = nextId++
-    // Add pending item to thread
     setThread((prev) => [...prev, { id, comment, status: 'loading' }])
 
     try {
       const res = await fetch(`${API_BASE}/api/app-1/reply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ comment, personaId }),
+        body: JSON.stringify({
+          comment,
+          personaId,
+          transcript: creatorContext.transcript,
+          notes: creatorContext.notes,
+        }),
       })
 
       if (!res.ok) {
@@ -61,6 +75,8 @@ export default function CreatorTwinApp() {
                 reply: data.reply,
                 confidence: data.confidence,
                 retrievedContext: data.retrievedContext,
+                editedReply: null,
+                approved: false,
               }
             : item
         )
@@ -73,7 +89,19 @@ export default function CreatorTwinApp() {
         )
       )
     }
-  }, [personaId])
+  }, [personaId, creatorContext])
+
+  function handleEditReply(id, newText) {
+    setThread((prev) =>
+      prev.map((item) => item.id === id ? { ...item, editedReply: newText } : item)
+    )
+  }
+
+  function handleApproveReply(id) {
+    setThread((prev) =>
+      prev.map((item) => item.id === id ? { ...item, approved: true } : item)
+    )
+  }
 
   function handleShowContext(item) {
     setDrawerItem(item)
@@ -93,69 +121,36 @@ export default function CreatorTwinApp() {
         </p>
       </div>
 
-      {/* Controls bar */}
-      <div className="max-w-5xl mx-auto px-4 py-3 border-y border-slate-700/40 bg-surface-card/40">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <PersonaSelector selectedId={personaId} onChange={handlePersonaChange} />
-          <ControlPanel
-            autoReply={autoReply}
-            onToggleAutoReply={() => setAutoReply((v) => !v)}
-            confidenceThreshold={confidenceThreshold}
-            onChangeThreshold={setConfidenceThreshold}
-          />
-        </div>
-      </div>
+      {/* View tab strip */}
+      <ViewTabStrip activeView={activeView} onChange={setActiveView} />
 
-      {/* Split-screen layout */}
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-4 h-[560px]">
-          {/* Left: Video panel */}
-          <VideoPanel personaId={personaId} />
+      {/* Active view */}
+      {activeView === 'follower' ? (
+        <FollowerView
+          personaId={personaId}
+          onPersonaChange={handlePersonaChange}
+          thread={thread}
+          onSubmitComment={handleSubmitComment}
+          onShowContext={handleShowContext}
+        />
+      ) : (
+        <CreatorView
+          personaId={personaId}
+          onPersonaChange={handlePersonaChange}
+          autoReply={autoReply}
+          onToggleAutoReply={() => setAutoReply((v) => !v)}
+          confidenceThreshold={confidenceThreshold}
+          onChangeThreshold={setConfidenceThreshold}
+          thread={thread}
+          onShowContext={handleShowContext}
+          onEditReply={handleEditReply}
+          onApproveReply={handleApproveReply}
+          creatorContext={creatorContext}
+          onContextChange={handleContextChange}
+        />
+      )}
 
-          {/* Right: Comment panel */}
-          <div className="glass rounded-2xl border border-slate-700/40 overflow-hidden flex flex-col">
-            {/* Comment panel header */}
-            <div className="px-4 py-3 border-b border-slate-700/40 flex items-center justify-between">
-              <span className="text-sm font-medium text-slate-200">💬 Comments</span>
-              <span className="text-xs text-slate-500">{thread.length} exchange{thread.length !== 1 ? 's' : ''}</span>
-            </div>
-
-            <CommentPanel
-              personaId={personaId}
-              thread={thread}
-              autoReply={autoReply}
-              confidenceThreshold={confidenceThreshold}
-              onSubmitComment={handleSubmitComment}
-              onShowContext={handleShowContext}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* How it works section */}
-      <div className="max-w-5xl mx-auto px-4 pb-10">
-        <div className="glass rounded-2xl border border-slate-700/40 p-5">
-          <h2 className="text-sm font-semibold text-slate-300 mb-3">How the RAG pipeline works</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { step: '1', icon: '📥', label: 'Embed', desc: 'Comment is vectorized using Pinecone multilingual-e5-large' },
-              { step: '2', icon: '🔍', label: 'Retrieve', desc: 'Top-3 similar past replies fetched from creator namespace' },
-              { step: '3', icon: '🤖', label: 'Generate', desc: 'GPT-4o-mini generates a reply grounded in retrieved context' },
-              { step: '4', icon: '📊', label: 'Score', desc: 'Confidence score from cosine similarity of top match' },
-            ].map(({ step, icon, label, desc }) => (
-              <div key={step} className="bg-slate-800/40 rounded-xl p-3 space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{icon}</span>
-                  <span className="text-xs font-semibold text-slate-200">{step}. {label}</span>
-                </div>
-                <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Context Drawer */}
+      {/* Context Drawer — root-level, triggered from both views */}
       <ContextDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}

@@ -37,7 +37,7 @@ async function listPersonas(req, res) {
  *  5. Compute confidence from top-1 Pinecone score (0–1 normalized)
  */
 async function generateReply(req, res) {
-  const { comment, personaId } = req.body
+  const { comment, personaId, transcript, notes } = req.body
 
   if (!comment || typeof comment !== 'string' || comment.trim().length === 0) {
     return res.status(400).json({ error: 'comment is required' })
@@ -63,10 +63,19 @@ async function generateReply(req, res) {
           .join('\n\n')
       : 'No similar past replies found — use persona tone to craft a natural reply.'
 
+    const transcriptBlock = transcript && transcript.trim()
+      ? `\nVideo content this comment is about:\n${transcript.trim()}\n`
+      : ''
+    const notesBlock = notes && notes.trim()
+      ? `\nAdditional creator context:\n${notes.trim()}\n`
+      : ''
+
     const systemPrompt =
       `You are ${persona.name}, a TikTok creator in the "${persona.niche}" niche.\n` +
-      `Your reply style: ${persona.tone}\n\n` +
-      `Here are examples of how you have replied to similar comments before:\n\n` +
+      `Your reply style: ${persona.tone}\n` +
+      transcriptBlock +
+      notesBlock +
+      `\nHere are examples of how you have replied to similar comments before:\n\n` +
       `${contextBlock}\n\n` +
       `Instructions:\n` +
       `- Reply to the new comment below in exactly ${persona.name}'s voice and style.\n` +

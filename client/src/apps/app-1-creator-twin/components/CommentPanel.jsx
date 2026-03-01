@@ -13,6 +13,7 @@ export default function CommentPanel({
   confidenceThreshold,
   onSubmitComment,
   onShowContext,
+  showMeta = true,
 }) {
   const [input, setInput] = useState('')
   const bottomRef = useRef(null)
@@ -52,6 +53,7 @@ export default function CommentPanel({
               key={item.id}
               item={item}
               onShowContext={onShowContext}
+              showMeta={showMeta}
             />
           ))
         )}

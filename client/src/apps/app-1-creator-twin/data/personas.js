@@ -14,6 +14,7 @@ export const PERSONAS = [
     videoDescription: 'Showing off my whole battle station — monitors, peripherals, and all the gear that helps me create content.',
     accentColor: '#00d4ff',   // neon blue
     thumbnail: null,           // no image; we'll render a styled placeholder
+    gifUrl: 'https://media.giphy.com/media/CF2EtyRX2d9Sa9Hoj7/giphy.gif',
   },
   {
     id: 'lifestyle',
@@ -25,6 +26,7 @@ export const PERSONAS = [
     videoDescription: 'Sharing my whole self-care Sunday — skincare, journaling, meal prep, and the little things that keep me grounded.',
     accentColor: '#f472b6',   // pink
     thumbnail: null,
+    gifUrl: 'https://media.giphy.com/media/hor7D3Z2ScD6Smr0Os/giphy.gif',
   },
   {
     id: 'fitness',
@@ -36,6 +38,7 @@ export const PERSONAS = [
     videoDescription: 'Zero equipment. Zero excuses. Full body workout you can do anywhere.',
     accentColor: '#f97316',   // orange
     thumbnail: null,
+    gifUrl: 'https://media.giphy.com/media/krmA7YIhRvwjJYbmrG/giphy.gif',
   },
 ]
 

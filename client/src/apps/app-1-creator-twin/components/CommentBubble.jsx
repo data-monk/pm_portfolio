@@ -3,7 +3,7 @@ import { useState } from 'react'
 /**
  * A single comment + AI reply pair in the comment thread.
  */
-export default function CommentBubble({ item, onShowContext }) {
+export default function CommentBubble({ item, onShowContext, showMeta = true }) {
   const [expanded, setExpanded] = useState(false)
 
   const confidenceColor =
@@ -51,26 +51,27 @@ export default function CommentBubble({ item, onShowContext }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="bg-surface-card border border-neon-purple/20 rounded-2xl rounded-tl-sm px-3 py-2 text-sm text-slate-200">
-              {item.reply}
+              {item.editedReply ?? item.reply}
             </div>
-            {/* Metadata row */}
-            <div className="flex items-center gap-2 mt-1.5 pl-1 flex-wrap">
-              {/* Confidence badge */}
-              <span className={`text-xs font-medium ${confidenceColor} flex items-center gap-1`}>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-current" />
-                {confidenceLabel} confidence ({item.confidence}%)
-              </span>
-              {/* Context button */}
-              {item.retrievedContext && item.retrievedContext.length > 0 && (
-                <button
-                  onClick={() => onShowContext(item)}
-                  className="text-xs text-neon-blue/70 hover:text-neon-blue transition-colors underline underline-offset-2"
-                >
-                  why this reply?
-                </button>
-              )}
-              {/* Expand/collapse for long replies */}
-            </div>
+            {/* Metadata row — creator-only */}
+            {showMeta && (
+              <div className="flex items-center gap-2 mt-1.5 pl-1 flex-wrap">
+                {/* Confidence badge */}
+                <span className={`text-xs font-medium ${confidenceColor} flex items-center gap-1`}>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-current" />
+                  {confidenceLabel} confidence ({item.confidence}%)
+                </span>
+                {/* Context button */}
+                {item.retrievedContext && item.retrievedContext.length > 0 && (
+                  <button
+                    onClick={() => onShowContext(item)}
+                    className="text-xs text-neon-blue/70 hover:text-neon-blue transition-colors underline underline-offset-2"
+                  >
+                    why this reply?
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
