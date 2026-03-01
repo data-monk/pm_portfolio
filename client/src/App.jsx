@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
 const RaasApp = lazy(() => import('./apps/app-3-raas/RaasApp'))
+const CreatorTwinApp = lazy(() => import('./apps/app-1-creator-twin/CreatorTwinApp'))
 
 // Placeholder pages for future apps
 const AppPlaceholder = ({ name }) => (
@@ -45,7 +46,14 @@ function App() {
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<LandingPage />} />
-                  <Route path="/apps/app-1" element={<AppPlaceholder name="Sentiment Analyzer" />} />
+                  <Route
+                    path="/apps/creator-twin"
+                    element={
+                      <Suspense fallback={<AppLoading />}>
+                        <CreatorTwinApp />
+                      </Suspense>
+                    }
+                  />
                   <Route path="/apps/app-2" element={<AppPlaceholder name="AI Chatbot" />} />
                 </Routes>
               </main>

@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const appsRouter = require('./routes/apps')
 const raasRouter = require('./routes/raas')
+const app1Router = require('./routes/app-1')
 
 const app = express()
 const PORT = process.env.PORT || 5001
@@ -14,6 +15,7 @@ app.use(express.json())
 // Routes
 app.use('/api/apps', appsRouter)
 app.use('/api/raas', raasRouter)
+app.use('/api/app-1', app1Router)
 
 // Health check
 app.get('/api/health', (req, res) => {

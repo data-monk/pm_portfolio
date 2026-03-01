@@ -31,7 +31,7 @@ async function upsert(tenantId, vectors) {
   // Pinecone upsert limit is 100 per call
   const BATCH = 100
   for (let i = 0; i < vectors.length; i += BATCH) {
-    await ns.upsert(vectors.slice(i, i + BATCH))
+    await ns.upsert({ records: vectors.slice(i, i + BATCH) })
   }
 }
 

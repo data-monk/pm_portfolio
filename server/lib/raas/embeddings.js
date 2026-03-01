@@ -22,12 +22,12 @@ function getClient() {
  * @returns {Promise<number[]>}
  */
 async function embedOne(text) {
-  const result = await getClient().inference.embed(
-    MODEL,
-    [text],
-    { inputType: 'query', truncate: 'END' }
-  )
-  return result[0].values
+  const result = await getClient().inference.embed({
+    model: MODEL,
+    inputs: [text],
+    parameters: { inputType: 'query', truncate: 'END' },
+  })
+  return result.data[0].values
 }
 
 /**
@@ -38,12 +38,12 @@ async function embedOne(text) {
  */
 async function embedBatch(texts) {
   if (texts.length === 0) return []
-  const result = await getClient().inference.embed(
-    MODEL,
-    texts,
-    { inputType: 'passage', truncate: 'END' }
-  )
-  return result.map((e) => e.values)
+  const result = await getClient().inference.embed({
+    model: MODEL,
+    inputs: texts,
+    parameters: { inputType: 'passage', truncate: 'END' },
+  })
+  return result.data.map((e) => e.values)
 }
 
 module.exports = { embedOne, embedBatch, DIMENSIONS, MODEL }

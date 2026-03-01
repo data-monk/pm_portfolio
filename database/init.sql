@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS portfolio_apps (
 INSERT OR IGNORE INTO portfolio_apps (title, summary, image_url, route, tags, sort_order)
 VALUES
   (
-    'Sentiment Analyzer',
-    'Real-time NLP tool that classifies customer feedback as positive, negative, or neutral — helping teams prioritize responses at scale.',
+    'AI Creator Twin',
+    'RAG-powered TikTok comment responder: select a creator persona, submit a comment, and watch the AI generate a reply grounded in the creator''s actual voice — with full retrieval context.',
     NULL,
-    '/apps/app-1',
-    '["React","OpenAI API","Node.js","SQL"]',
+    '/apps/creator-twin',
+    '["RAG","Pinecone","GPT-4o-mini","React"]',
     1
   ),
   (
