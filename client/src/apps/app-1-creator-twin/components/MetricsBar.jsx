@@ -1,16 +1,24 @@
-import { METRICS } from '../data/metricsData'
+import { METRIC_CATALOG, METRICS, DEFAULT_METRIC_KEYS } from '../data/metricsData'
 
 /**
- * 5 stat cards showing AI-impact metrics for the selected persona.
- * Updates when personaId changes.
+ * Renders stat cards for the enabled metric keys in catalog order.
+ * Falls back to DEFAULT_METRIC_KEYS if enabledMetrics is not provided.
  */
-export default function MetricsBar({ personaId }) {
-  const metrics = METRICS[personaId] || []
+export default function MetricsBar({ personaId, enabledMetrics }) {
+  const keys = enabledMetrics || DEFAULT_METRIC_KEYS
+  const personaMetrics = METRICS[personaId] || {}
+
+  const entries = METRIC_CATALOG
+    .filter((cat) => keys.includes(cat.key))
+    .map((cat) => ({
+      ...cat,
+      ...(personaMetrics[cat.key] || { value: '—', delta: null }),
+    }))
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-      {metrics.map((m) => (
-        <div key={m.label} className="glass rounded-xl p-3 border border-slate-700/40">
+      {entries.map((m) => (
+        <div key={m.key} className="glass rounded-xl p-3 border border-slate-700/40">
           <div className="flex items-center gap-1.5 mb-1.5">
             <span className="text-base">{m.icon}</span>
             <span className="text-xs text-slate-500 leading-tight">{m.label}</span>

@@ -4,6 +4,7 @@ import ViewTabStrip from './components/ViewTabStrip'
 import FollowerView from './views/FollowerView'
 import CreatorView from './views/CreatorView'
 import { PERSONA_MAP } from './data/personas'
+import { DEFAULT_METRIC_KEYS } from './data/metricsData'
 
 const API_BASE = import.meta.env.DEV ? 'http://localhost:5001' : ''
 
@@ -11,8 +12,7 @@ let nextId = 1
 
 /**
  * AI Creator Twin — Top-level state owner.
- * Renders ViewTabStrip + conditional FollowerView or CreatorView.
- * ContextDrawer lives at root so both views can trigger it.
+ * Owns: persona, thread, creatorContext, guardrails, enabledMetrics, drawer.
  */
 export default function CreatorTwinApp() {
   const [activeView, setActiveView] = useState('follower')
@@ -29,6 +29,15 @@ export default function CreatorTwinApp() {
     notes: '',
   })
 
+  // Guardrails: preset + individual enabled keys
+  const [guardrails, setGuardrails] = useState({
+    preset: 'standard',
+    enabled: ['nsw', 'sexual_violence', 'graphic_violence', 'hate_harassment', 'self_harm', 'personal_data', 'illegal'],
+  })
+
+  // Metrics: keys visible on the dashboard metrics bar
+  const [enabledMetrics, setEnabledMetrics] = useState(DEFAULT_METRIC_KEYS)
+
   // Context drawer state
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [drawerItem, setDrawerItem] = useState(null)
@@ -41,6 +50,14 @@ export default function CreatorTwinApp() {
 
   function handleContextChange(field, value) {
     setCreatorContext((prev) => ({ ...prev, [field]: value }))
+  }
+
+  function handleGuardrailsChange(update) {
+    setGuardrails((prev) => ({ ...prev, ...update }))
+  }
+
+  function handleMetricsChange(keys) {
+    setEnabledMetrics(keys)
   }
 
   const handleSubmitComment = useCallback(async (comment) => {
@@ -56,6 +73,7 @@ export default function CreatorTwinApp() {
           personaId,
           transcript: creatorContext.transcript,
           notes: creatorContext.notes,
+          guardrails: guardrails.enabled,
         }),
       })
 
@@ -89,7 +107,7 @@ export default function CreatorTwinApp() {
         )
       )
     }
-  }, [personaId, creatorContext])
+  }, [personaId, creatorContext, guardrails.enabled])
 
   function handleEditReply(id, newText) {
     setThread((prev) =>
@@ -147,6 +165,10 @@ export default function CreatorTwinApp() {
           onApproveReply={handleApproveReply}
           creatorContext={creatorContext}
           onContextChange={handleContextChange}
+          guardrails={guardrails}
+          onGuardrailsChange={handleGuardrailsChange}
+          enabledMetrics={enabledMetrics}
+          onMetricsChange={handleMetricsChange}
         />
       )}
 
