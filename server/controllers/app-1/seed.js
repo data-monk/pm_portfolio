@@ -43,7 +43,7 @@ async function seedPersona(persona) {
 }
 
 async function main() {
-  console.log('=== AI Creator Twin — Pinecone Seed Script ===')
+  console.log('=== EngageAI — Pinecone Seed Script ===')
   console.log(`Index: ${process.env.PINECONE_INDEX}`)
 
   for (const persona of PERSONAS) {

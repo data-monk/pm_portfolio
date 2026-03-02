@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * Demo personas for AI Creator Twin.
+ * Demo personas for EngageAI.
  * Each persona has a name, niche, tone description, and 25 past replies
  * that will be embedded and stored in Pinecone for RAG retrieval.
  *

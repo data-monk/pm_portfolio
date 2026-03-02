@@ -1,5 +1,5 @@
 /**
- * Client-side persona configs for AI Creator Twin.
+ * Client-side persona configs for EngageAI.
  * Mirrors server-side personas — kept in sync manually.
  * The full list is also fetched from /api/app-1/personas at runtime.
  */

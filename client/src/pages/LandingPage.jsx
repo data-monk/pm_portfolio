@@ -5,12 +5,12 @@ import AppCard from '../components/AppCard'
 const FALLBACK_APPS = [
   {
     id: 1,
-    title: 'Sentiment Analyzer',
+    title: 'EngageAI',
     summary:
-      'Real-time NLP tool that classifies customer feedback as positive, negative, or neutral — helping teams prioritize responses at scale.',
+      'RAG-powered TikTok comment responder: select a creator persona, submit a comment, and watch the AI generate a reply grounded in the creator\'s actual voice — with full retrieval context.',
     imageUrl: null,
-    route: '/apps/app-1',
-    tags: ['React', 'OpenAI API', 'Node.js', 'SQL'],
+    route: '/apps/creator-twin',
+    tags: ['RAG', 'Pinecone', 'GPT-4o-mini', 'React'],
   },
   {
     id: 2,
@@ -80,7 +80,7 @@ export default function LandingPage() {
             that people love.
           </h1>
           <p className="text-slate-400 max-w-xl leading-relaxed">
-            I'm an aspiring AI Tech PM obsessed with the intersection of
+            I'm an AI Tech PM obsessed with the intersection of
             machine learning, great UX, and fast execution. This portfolio is a
             living showcase of production-grade AI tools I've designed and
             built end-to-end.
