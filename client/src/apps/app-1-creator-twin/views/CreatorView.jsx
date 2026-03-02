@@ -21,12 +21,15 @@ export default function CreatorView({
   onShowContext,
   onEditReply,
   onApproveReply,
+  onManualReply,
   creatorContext,
   onContextChange,
   guardrails,
   onGuardrailsChange,
   enabledMetrics,
   onMetricsChange,
+  replyAutomation,
+  onReplyAutomationChange,
 }) {
   const [contextExpanded, setContextExpanded] = useState(false)
   const [creatorTab, setCreatorTab] = useState('dashboard')
@@ -76,6 +79,8 @@ export default function CreatorView({
           onGuardrailsChange={onGuardrailsChange}
           enabledMetrics={enabledMetrics}
           onMetricsChange={onMetricsChange}
+          replyAutomation={replyAutomation}
+          onReplyAutomationChange={onReplyAutomationChange}
         />
       ) : (
         <>
@@ -146,6 +151,7 @@ export default function CreatorView({
                   onShowContext={onShowContext}
                   onEditReply={onEditReply}
                   onApproveReply={onApproveReply}
+                  onManualReply={onManualReply}
                 />
               </div>
             </div>

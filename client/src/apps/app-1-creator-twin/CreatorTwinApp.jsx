@@ -10,35 +10,42 @@ const API_BASE = import.meta.env.DEV ? 'http://localhost:5001' : ''
 
 let nextId = 1
 
-/**
- * AI Creator Twin — Top-level state owner.
- * Owns: persona, thread, creatorContext, guardrails, enabledMetrics, drawer.
- */
 export default function CreatorTwinApp() {
   const [activeView, setActiveView] = useState('follower')
   const [personaId, setPersonaId] = useState('tech')
   const [autoReply, setAutoReply] = useState(true)
   const [confidenceThreshold, setConfidenceThreshold] = useState(50)
 
-  // Thread: { id, comment, status, reply, confidence, retrievedContext, editedReply, approved }
+  // Thread: { id, comment, status, reply, confidence, retrievedContext, editedReply, approved, manualReply }
   const [thread, setThread] = useState([])
 
-  // Creator context: injected into every reply request
   const [creatorContext, setCreatorContext] = useState({
     transcript: PERSONA_MAP['tech'].videoDescription,
     notes: '',
   })
 
-  // Guardrails: preset + individual enabled keys
   const [guardrails, setGuardrails] = useState({
     preset: 'standard',
     enabled: ['nsw', 'sexual_violence', 'graphic_violence', 'hate_harassment', 'self_harm', 'personal_data', 'illegal'],
   })
 
-  // Metrics: keys visible on the dashboard metrics bar
   const [enabledMetrics, setEnabledMetrics] = useState(DEFAULT_METRIC_KEYS)
 
-  // Context drawer state
+  const [replyAutomation, setReplyAutomation] = useState({
+    mode: 'hybrid',
+    confidenceThreshold: 60,
+    minLikesToReply: 0,
+    commentTypes: { questions: true, complaints: true, praise: true, requests: true },
+    alwaysManual: {
+      sensitiveTopics: true,
+      highProfileUsers: false,
+      keywords: ['price', 'refund', 'sponsor', 'medical', 'legal'],
+    },
+    rateLimits: { maxPerHour: 60, maxPerVideoPerDay: 200 },
+    timingWindow: { enabled: false, maxHoursSincePublish: 24 },
+    enableApprovalQueue: false,
+  })
+
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [drawerItem, setDrawerItem] = useState(null)
 
@@ -58,6 +65,28 @@ export default function CreatorTwinApp() {
 
   function handleMetricsChange(keys) {
     setEnabledMetrics(keys)
+  }
+
+  function handleReplyAutomationChange(update) {
+    setReplyAutomation((prev) => ({ ...prev, ...update }))
+  }
+
+  function handleManualReply(id, replyText) {
+    setThread((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              manualReply: {
+                text: replyText,
+                reply_type: 'manual',
+                created_by: 'creator',
+                created_at: new Date().toISOString(),
+              },
+            }
+          : item
+      )
+    )
   }
 
   const handleSubmitComment = useCallback(async (comment) => {
@@ -130,12 +159,9 @@ export default function CreatorTwinApp() {
     <div className="min-h-screen bg-surface text-white">
       {/* Page header */}
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-4">
-        <div className="mb-1">
-          <span className="text-xs text-neon-blue font-mono tracking-widest uppercase">App 1 — RAG Pipeline Demo</span>
-        </div>
-        <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-1">AI Creator Twin</h1>
+        <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-1">EngageAI for Creators</h1>
         <p className="text-slate-400 text-sm max-w-xl">
-          Select a creator persona. Submit a comment. Watch the AI generate a reply grounded in that creator's actual voice — powered by RAG.
+          EngageAI — AI-powered creator engagement copilot. Built a style-aware reply generation system using RAG to mimic creator tone and increase engagement.
         </p>
       </div>
 
@@ -163,16 +189,19 @@ export default function CreatorTwinApp() {
           onShowContext={handleShowContext}
           onEditReply={handleEditReply}
           onApproveReply={handleApproveReply}
+          onManualReply={handleManualReply}
           creatorContext={creatorContext}
           onContextChange={handleContextChange}
           guardrails={guardrails}
           onGuardrailsChange={handleGuardrailsChange}
           enabledMetrics={enabledMetrics}
           onMetricsChange={handleMetricsChange}
+          replyAutomation={replyAutomation}
+          onReplyAutomationChange={handleReplyAutomationChange}
         />
       )}
 
-      {/* Context Drawer — root-level, triggered from both views */}
+      {/* Context Drawer */}
       <ContextDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
