@@ -161,7 +161,8 @@ export default function CreatorTwinApp() {
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-4">
         <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-1">EngageAI for Creators</h1>
         <p className="text-slate-400 text-sm max-w-xl">
-          EngageAI — AI-powered creator engagement copilot. Built a style-aware reply generation system using RAG to mimic creator tone and increase engagement.
+          EngageAI is your AI-powered engagement assistant.<br />
+          It reads your content, learns your tone, and helps you respond to comments in a way that feels authentic—saving time while boosting audience connection and growth.
         </p>
       </div>
 
