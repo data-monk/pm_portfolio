@@ -55,16 +55,14 @@ export default function LandingPage() {
         id="about"
         className="pt-28 pb-20 flex flex-col sm:flex-row items-center gap-12"
       >
-        {/* Profile Picture Placeholder */}
+        {/* Profile Picture */}
         <div className="flex-shrink-0">
-          <div className="w-36 h-36 rounded-full bg-gradient-to-br from-neon-blue/30 via-surface-border to-neon-purple/30 border-2 border-neon-blue/30 flex items-center justify-center shadow-glow">
-            <svg
-              className="w-16 h-16 text-slate-600"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-            </svg>
+          <div className="w-36 h-36 rounded-full border-2 border-neon-blue/30 shadow-glow overflow-hidden">
+            <img
+              src="/profile.jpeg"
+              alt="Prasun Anand"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
@@ -89,7 +87,7 @@ export default function LandingPage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#projects"
-              className="px-6 py-2.5 rounded-full bg-neon-blue text-black font-semibold text-sm hover:opacity-90 transition-opacity"
+              className="inline-flex items-center px-6 py-2.5 rounded-full bg-neon-blue text-black font-semibold text-sm hover:opacity-90 transition-opacity"
             >
               View Projects
             </a>
