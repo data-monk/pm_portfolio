@@ -130,7 +130,7 @@ export default function DriveConnect() {
               value={folderId}
               onChange={(e) => setFolderId(e.target.value)}
               placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..."
-              className="flex-1 bg-surface-DEFAULT border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-blue"
+              className="flex-1 bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-blue"
             />
             <button
               type="submit"

@@ -58,7 +58,7 @@ export default function Documents() {
                 <th className="text-left px-5 py-3 hidden lg:table-cell">Link</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-border bg-surface-DEFAULT">
+            <tbody className="divide-y divide-surface-border bg-surface">
               {docs.map((doc) => (
                 <tr key={doc.id} className="hover:bg-white/5 transition-colors">
                   <td className="px-5 py-3 text-white font-medium max-w-xs">

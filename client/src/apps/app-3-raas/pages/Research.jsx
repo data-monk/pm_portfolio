@@ -86,7 +86,7 @@ export default function Research() {
             <select
               value={selectedPromptId}
               onChange={(e) => setSelectedPromptId(e.target.value)}
-              className="w-full bg-surface-DEFAULT border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-purple"
+              className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-purple"
             >
               <option value="">— Use default —</option>
               {prompts.map((p) => (
@@ -106,7 +106,7 @@ export default function Research() {
                 rows={4}
                 required
                 placeholder="Ask anything about your knowledge base…"
-                className="w-full bg-surface-DEFAULT border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-purple resize-none"
+                className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-purple resize-none"
               />
             </div>
             <button

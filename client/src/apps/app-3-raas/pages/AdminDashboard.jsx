@@ -75,7 +75,7 @@ export default function AdminDashboard() {
             <a
               key={item.href}
               href={item.href}
-              className="block p-4 rounded-xl bg-surface-DEFAULT hover:bg-white/5 border border-surface-border transition-colors"
+              className="block p-4 rounded-xl bg-surface hover:bg-white/5 border border-surface-border transition-colors"
             >
               <p className="text-white font-medium text-sm">{item.label}</p>
               <p className="text-slate-400 text-xs mt-1">{item.desc}</p>

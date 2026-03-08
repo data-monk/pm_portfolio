@@ -33,7 +33,7 @@ function PromptForm({ initial, onSave, onCancel }) {
           onChange={(e) => setName(e.target.value)}
           required
           disabled={!!initial}
-          className="w-full bg-surface-DEFAULT border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-blue disabled:opacity-50"
+          className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-blue disabled:opacity-50"
         />
       </div>
       <div>
@@ -41,7 +41,7 @@ function PromptForm({ initial, onSave, onCancel }) {
         <input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full bg-surface-DEFAULT border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-blue"
+          className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-blue"
         />
       </div>
       <div>
@@ -51,7 +51,7 @@ function PromptForm({ initial, onSave, onCancel }) {
           onChange={(e) => setContent(e.target.value)}
           required
           rows={8}
-          className="w-full bg-surface-DEFAULT border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-neon-blue resize-none"
+          className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-neon-blue resize-none"
         />
       </div>
       {!initial && (
@@ -201,7 +201,7 @@ export default function PromptManager() {
               <div className="px-5 pb-5 space-y-4 border-t border-surface-border">
                 {p.description && <p className="text-slate-400 text-sm pt-3">{p.description}</p>}
                 {p.content && (
-                  <pre className="text-xs text-slate-300 bg-surface-DEFAULT rounded-lg p-4 overflow-auto max-h-48 whitespace-pre-wrap font-mono">
+                  <pre className="text-xs text-slate-300 bg-surface rounded-lg p-4 overflow-auto max-h-48 whitespace-pre-wrap font-mono">
                     {p.content}
                   </pre>
                 )}
