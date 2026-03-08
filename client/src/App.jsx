@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 
 const RaasApp = lazy(() => import('./apps/app-3-raas/RaasApp'))
 const CreatorTwinApp = lazy(() => import('./apps/app-1-creator-twin/CreatorTwinApp'))
+const VioletCrumbsApp = lazy(() => import('./apps/app-4-violet-crumbs/VioletCrumbsApp'))
 
 // Placeholder pages for future apps
 const AppPlaceholder = ({ name }) => (
@@ -33,6 +34,16 @@ function App() {
           element={
             <Suspense fallback={<AppLoading />}>
               <RaasApp />
+            </Suspense>
+          }
+        />
+
+        {/* Violet Crumbs app — manages its own layout */}
+        <Route
+          path="/apps/violet-crumbs/*"
+          element={
+            <Suspense fallback={<AppLoading />}>
+              <VioletCrumbsApp />
             </Suspense>
           }
         />

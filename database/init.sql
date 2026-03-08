@@ -23,11 +23,11 @@ VALUES
     1
   ),
   (
-    'AI Chatbot',
-    'Conversational AI assistant with context memory, tool use, and a streaming UI — demonstrating end-to-end LLM product integration.',
+    'Violet Crumbs',
+    'Mobile-first food-sharing app for NYU Stern: discover free food from campus events in real time, filter by dietary preferences, post excess catering, and track campus-wide food waste impact.',
     NULL,
-    '/apps/app-2',
-    '["React","Claude API","Express","WebSockets"]',
+    '/apps/violet-crumbs',
+    '["React","TypeScript","shadcn/ui","Framer Motion","Tailwind CSS"]',
     2
   ),
   (

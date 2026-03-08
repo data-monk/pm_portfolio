@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
+/* Scoped CSS variables — all violet-crumbs styles live under .vc-app */
+.vc-app {
+  --background: 260 20% 98%;
+  --foreground: 267 30% 12%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 267 30% 12%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 267 30% 12%;
+
+  --primary: 267 54% 35%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 267 30% 95%;
+  --secondary-foreground: 267 54% 25%;
+
+  --muted: 260 15% 93%;
+  --muted-foreground: 260 10% 45%;
+
+  --accent: 32 95% 55%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 260 15% 90%;
+  --input: 260 15% 88%;
+  --ring: 267 54% 35%;
+
+  --radius: 0.75rem;
+
+  --success: 152 60% 42%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 100%;
+
+  --urgent: 0 85% 60%;
+  --urgent-foreground: 0 0% 100%;
+
+  --violet-glow: 267 70% 60%;
+  --violet-light: 267 60% 92%;
+  --violet-deep: 267 65% 20%;
+
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  /* Reset to light theme regardless of portfolio dark mode */
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+}
+
+.vc-app h1,
+.vc-app h2,
+.vc-app h3,
+.vc-app h4,
+.vc-app h5,
+.vc-app h6 {
+  font-family: var(--font-heading);
+}
+
+/* Utility classes scoped to .vc-app */
+.vc-app .gradient-violet {
+  background: linear-gradient(135deg, hsl(267, 54%, 35%), hsl(267, 70%, 55%));
+}
+
+.vc-app .gradient-violet-accent {
+  background: linear-gradient(135deg, hsl(267, 54%, 35%), hsl(290, 60%, 50%));
+}
+
+.vc-app .gradient-warm {
+  background: linear-gradient(135deg, hsl(32, 95%, 55%), hsl(15, 90%, 55%));
+}
+
+.vc-app .gradient-card {
+  background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(267, 30%, 98%) 100%);
+}
+
+.vc-app .shadow-violet {
+  box-shadow: 0 4px 20px -4px hsl(267 54% 35% / 0.2);
+}
+
+.vc-app .shadow-card {
+  box-shadow: 0 2px 12px -2px hsl(267 30% 12% / 0.08);
+}
+
+.vc-app .shadow-card-hover {
+  box-shadow: 0 8px 30px -4px hsl(267 54% 35% / 0.15);
+}
+
+.vc-app .text-gradient-violet {
+  background: linear-gradient(135deg, hsl(267, 54%, 35%), hsl(267, 70%, 55%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.vc-app .glass-card {
+  background: hsl(0 0% 100% / 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(260 15% 90% / 0.6);
+}

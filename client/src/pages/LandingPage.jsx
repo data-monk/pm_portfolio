@@ -13,13 +13,13 @@ const FALLBACK_APPS = [
     tags: ['RAG', 'Pinecone', 'GPT-4o-mini', 'React'],
   },
   {
-    id: 2,
-    title: 'AI Chatbot',
+    id: 4,
+    title: 'Violet Crumbs',
     summary:
-      'Conversational AI assistant with context memory, tool use, and a streaming UI — demonstrating end-to-end LLM product integration.',
+      'Mobile-first food-sharing app for NYU Stern: discover free food from campus events in real time, filter by dietary preferences, post excess catering, and track campus-wide food waste impact.',
     imageUrl: null,
-    route: '/apps/app-2',
-    tags: ['React', 'Claude API', 'Express', 'WebSockets'],
+    route: '/apps/violet-crumbs',
+    tags: ['React', 'TypeScript', 'shadcn/ui', 'Framer Motion', 'Tailwind CSS'],
   },
   {
     id: 3,
