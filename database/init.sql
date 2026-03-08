@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS portfolio_apps (
   created_at TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
+-- Ensure AI Chatbot placeholder is deactivated if it exists from an old seed
+UPDATE portfolio_apps SET active=0 WHERE route='/apps/app-2';
+
 -- Seed data
 INSERT OR IGNORE INTO portfolio_apps (title, summary, image_url, route, tags, sort_order)
 VALUES
