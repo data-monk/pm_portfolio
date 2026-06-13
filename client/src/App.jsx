@@ -65,7 +65,7 @@ function App() {
                       </Suspense>
                     }
                   />
-                  <Route path="/apps/app-2" element={<AppPlaceholder name="AI Chatbot" />} />
+
                 </Routes>
               </main>
               <Footer />
