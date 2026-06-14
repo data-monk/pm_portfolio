@@ -1,7 +1,8 @@
 # Security Audit — PM Portfolio Monorepo
 
 **Audited:** 2026-06-13  
-**Status:** Findings logged; fixes not yet applied
+**Last updated:** 2026-06-13  
+**Status:** In progress — 5/14 tasks complete (all 🔴 CRITICAL resolved)
 
 Each task below is self-contained and ordered by priority. Work through them one at a time.
 
