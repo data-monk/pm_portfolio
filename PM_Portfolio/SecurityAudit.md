@@ -11,8 +11,8 @@ Each task below is self-contained and ordered by priority. Work through them one
 
 | # | Severity | Task | Status |
 |---|---|---|---|
-| 1 | 🔴 CRITICAL | Rotate OpenAI + Pinecone API keys | [ ] |
-| 2 | 🔴 CRITICAL | Rotate JWT_SECRET + ENCRYPTION_KEY | [ ] |
+| 1 | 🔴 CRITICAL | Rotate OpenAI + Pinecone API keys | [x] |
+| 2 | 🔴 CRITICAL | Rotate JWT_SECRET + ENCRYPTION_KEY | [x] |
 | 3 | 🔴 CRITICAL | Create `.dockerignore` (prevent keys baking into image) | [ ] |
 | 4 | 🔴 CRITICAL | Fix wrong `CLIENT_ORIGIN` in docker-compose.yml | [ ] |
 | 5 | 🟠 HIGH | Add rate limiting (express-rate-limit) | [ ] |
@@ -23,7 +23,7 @@ Each task below is self-contained and ordered by priority. Work through them one
 | 10 | 🟡 MEDIUM | Fix OAuth callback CSRF (nonce validation) | [ ] |
 | 11 | 🟡 MEDIUM | Validate `topK` param + cap body field lengths | [ ] |
 | 12 | 🟡 MEDIUM | Shorten JWT TTL from 7d to 8h | [ ] |
-| 13 | 🟡 MEDIUM | Inject secrets via CI/CD instead of manual VPS file | [ ] |
+| 13 | 🟡 MEDIUM | Inject secrets via CI/CD instead of manual VPS file | [x] |
 | 14 | 🟢 LOW | Delete `server/test-embed.js` dev artifact | [ ] |
 
 ---
