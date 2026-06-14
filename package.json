@@ -1,0 +1,14 @@
+{
+  "name": "portfolio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres -d && concurrently --names 'server,client' --prefix-colors 'yellow,cyan' 'npm --prefix server run dev' 'cd client && /usr/local/opt/node@20/bin/node ./node_modules/.bin/vite'",
+    "stop": "docker compose -f docker-compose.yml -f docker-compose.dev.yml stop postgres",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

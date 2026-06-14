@@ -1,0 +1,6 @@
+# Local dev override: exposes Postgres to host so the native server process can reach it.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres -d
+services:
+  postgres:
+    ports:
+      - '5432:5432'
