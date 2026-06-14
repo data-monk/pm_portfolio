@@ -10,7 +10,7 @@ async function connect(req, res) {
     const authUrl = driveLib.getAuthUrl()
     return res.json({ authUrl })
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -57,7 +57,7 @@ async function callback(req, res) {
     return res.redirect(`${clientOrigin}/apps/raas/admin/drive?connected=1`)
   } catch (err) {
     console.error('[admin-drive] callback error:', err.message)
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -90,7 +90,7 @@ async function setFolder(req, res) {
 
     return res.json({ folderId, folderName: meta.name })
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -123,7 +123,7 @@ async function status(req, res) {
       docStats: stats,
     })
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -137,7 +137,7 @@ async function sync(req, res) {
     )
     return res.json({ message: 'Sync started' })
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -155,7 +155,7 @@ async function documents(req, res) {
     )
     return res.json(result.rows)
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 

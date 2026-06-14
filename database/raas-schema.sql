@@ -117,7 +117,7 @@ INSERT INTO tenants (id, name)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Demo Company')
 ON CONFLICT DO NOTHING;
 
--- Admin user (password: admin123 — bcrypt hash)
+-- Admin user
 INSERT INTO users (id, tenant_id, email, password_hash, role)
 VALUES (
   '00000000-0000-0000-0000-000000000002',
@@ -127,7 +127,7 @@ VALUES (
   'ADMIN'
 ) ON CONFLICT DO NOTHING;
 
--- Regular user (password: user123 — bcrypt hash)
+-- Regular user
 INSERT INTO users (id, tenant_id, email, password_hash, role)
 VALUES (
   '00000000-0000-0000-0000-000000000003',

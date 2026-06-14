@@ -16,7 +16,7 @@ async function list(req, res) {
     )
     return res.json(result.rows)
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -56,7 +56,7 @@ async function create(req, res) {
   } catch (err) {
     await client.query('ROLLBACK')
     if (err.code === '23505') return res.status(409).json({ error: 'Prompt name already exists' })
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   } finally {
     client.release()
   }
@@ -79,7 +79,7 @@ async function get(req, res) {
     )
     return res.json({ ...spRes.rows[0], versions: versRes.rows })
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -133,7 +133,7 @@ async function update(req, res) {
     return res.json({ id, newVersion: vRes.rows[0] })
   } catch (err) {
     await client.query('ROLLBACK')
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   } finally {
     client.release()
   }
@@ -151,7 +151,7 @@ async function remove(req, res) {
     if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' })
     return res.json({ deleted: id })
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -178,7 +178,7 @@ async function setDefault(req, res) {
     return res.json({ default: id })
   } catch (err) {
     await client.query('ROLLBACK')
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   } finally {
     client.release()
   }

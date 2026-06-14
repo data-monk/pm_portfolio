@@ -26,7 +26,7 @@ async function listPrompts(req, res) {
     )
     return res.json(result.rows)
   } catch (err) {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -131,7 +131,7 @@ async function queryResearch(req, res) {
     })
   } catch (err) {
     console.error('[research] query error:', err.message)
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }
 

@@ -155,7 +155,7 @@ async function generateReply(req, res) {
     })
   } catch (err) {
     console.error('[app-1/generateReply] error:', err.message)
-    res.status(500).json({ error: 'Failed to generate reply', detail: err.message })
+    res.status(500).json({ error: 'Failed to generate reply' })
   }
 }
 
