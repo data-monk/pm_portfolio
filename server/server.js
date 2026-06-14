@@ -9,6 +9,8 @@ const app1Router = require('./routes/app-1')
 const app = express()
 const PORT = process.env.PORT || 5001
 
+app.set('trust proxy', 1)
+
 // Middleware
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000' }))
 app.use(express.json())
