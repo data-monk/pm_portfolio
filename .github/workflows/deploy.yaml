@@ -21,6 +21,31 @@ jobs:
           source: "."
           target: "/opt/pm_portfolio"
 
+      - name: Write production .env
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            mkdir -p /opt/pm_portfolio/server
+            cat > /opt/pm_portfolio/server/.env << 'ENVEOF'
+            PORT=5001
+            CLIENT_ORIGIN=https://prasunanand.com
+            DB_PATH=../database/portfolio.db
+            POSTGRES_URL=postgresql://raas_user:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/raas
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            GOOGLE_REDIRECT_URI=https://prasunanand.com/api/raas/admin/drive/callback
+            PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }}
+            PINECONE_INDEX=raas-index
+            ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
+            ENVEOF
+
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1
         with:
