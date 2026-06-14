@@ -2,7 +2,7 @@
 
 **Audited:** 2026-06-13  
 **Last updated:** 2026-06-13  
-**Status:** In progress — 5/14 tasks complete (all 🔴 CRITICAL resolved)
+**Status:** In progress — 7/14 tasks complete (all 🔴 CRITICAL resolved)
 
 Each task below is self-contained and ordered by priority. Work through them one at a time.
 
@@ -16,8 +16,8 @@ Each task below is self-contained and ordered by priority. Work through them one
 | 2 | 🔴 CRITICAL | Rotate JWT_SECRET + ENCRYPTION_KEY | [x] |
 | 3 | 🔴 CRITICAL | Create `.dockerignore` (prevent keys baking into image) | [x] |
 | 4 | 🔴 CRITICAL | Fix wrong `CLIENT_ORIGIN` in docker-compose.yml | [x] |
-| 5 | 🟠 HIGH | Add rate limiting (express-rate-limit) | [ ] |
-| 6 | 🟠 HIGH | Add auth middleware to App-1 routes | [ ] |
+| 5 | 🟠 HIGH | Add rate limiting (express-rate-limit) | [x] |
+| 6 | 🟠 HIGH | Add auth middleware to App-1 routes | [x] |
 | 7 | 🟠 HIGH | Strip internal error messages from 500 responses | [ ] |
 | 8 | 🟠 HIGH | Change weak seed credentials (admin123 / user123) | [ ] |
 | 9 | 🟠 HIGH | Add Helmet.js + Nginx security headers | [ ] |
