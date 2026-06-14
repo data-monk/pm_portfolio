@@ -46,13 +46,8 @@ async function callback(req, res) {
       [tenantId]
     )
 
-  try {
     const tokens = await driveLib.exchangeCode(code)
 
-    // We need a folderId — for MVP the admin supplies it as a query param or
-    // via the drive/connect body. We'll store it in a temp state or require
-    // it to be provided after the OAuth flow.
-    // For simplicity, store the connection now and let the admin specify the folder.
     await db.query(
       `INSERT INTO drive_connections (tenant_id, folder_id, folder_name, access_token_enc, refresh_token_enc, token_expiry, status)
        VALUES ($1, '', NULL, $2, $3, $4, 'CONNECTED')
@@ -70,7 +65,6 @@ async function callback(req, res) {
       ]
     )
 
-    // Redirect to admin Drive page
     const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:3000'
     return res.redirect(`${clientOrigin}/apps/raas/admin/drive?connected=1`)
   } catch (err) {
