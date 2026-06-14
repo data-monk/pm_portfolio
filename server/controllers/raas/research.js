@@ -34,7 +34,9 @@ async function listPrompts(req, res) {
 async function queryResearch(req, res) {
   const tenantId = req.user.tenantId
   const userId = req.user.userId
-  const { query, promptId, topK = 8 } = req.body
+  const { query, promptId } = req.body
+  const rawTopK = parseInt(req.body.topK, 10)
+  const topK = Number.isFinite(rawTopK) ? Math.min(Math.max(rawTopK, 1), 20) : 8
 
   if (!query || query.trim().length === 0) {
     return res.status(400).json({ error: 'query is required' })

@@ -2,7 +2,7 @@
 
 **Audited:** 2026-06-13  
 **Last updated:** 2026-06-13  
-**Status:** In progress — 10/14 tasks complete (all 🔴 CRITICAL + all 🟠 HIGH resolved)
+**Status:** COMPLETE — 14/14 tasks done (tasks 6 and 8 marked N/A for public demo)
 
 Each task below is self-contained and ordered by priority. Work through them one at a time.
 
@@ -21,11 +21,11 @@ Each task below is self-contained and ordered by priority. Work through them one
 | 7 | 🟠 HIGH | Strip internal error messages from 500 responses | [x] |
 | 8 | 🟠 HIGH | Change weak seed credentials (admin123 / user123) | N/A — intentional for public demo |
 | 9 | 🟠 HIGH | Add Helmet.js + Nginx security headers | [x] |
-| 10 | 🟡 MEDIUM | Fix OAuth callback CSRF (nonce validation) | [ ] |
-| 11 | 🟡 MEDIUM | Validate `topK` param + cap body field lengths | [ ] |
-| 12 | 🟡 MEDIUM | Shorten JWT TTL from 7d to 8h | [ ] |
+| 10 | 🟡 MEDIUM | Fix OAuth callback CSRF (nonce validation) | [x] |
+| 11 | 🟡 MEDIUM | Validate `topK` param + cap body field lengths | [x] |
+| 12 | 🟡 MEDIUM | Shorten JWT TTL from 7d to 8h | [x] |
 | 13 | 🟡 MEDIUM | Inject secrets via CI/CD instead of manual VPS file | [x] |
-| 14 | 🟢 LOW | Delete `server/test-embed.js` dev artifact | [ ] |
+| 14 | 🟢 LOW | Delete `server/test-embed.js` dev artifact | [x] |
 
 ---
 

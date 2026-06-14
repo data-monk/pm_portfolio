@@ -57,6 +57,15 @@ async function generateReply(req, res) {
   if (!comment || typeof comment !== 'string' || comment.trim().length === 0) {
     return res.status(400).json({ error: 'comment is required' })
   }
+  if (comment.trim().length > 1000) {
+    return res.status(400).json({ error: 'comment exceeds 1000 character limit' })
+  }
+  if (transcript && transcript.length > 5000) {
+    return res.status(400).json({ error: 'transcript exceeds 5000 character limit' })
+  }
+  if (notes && notes.length > 2000) {
+    return res.status(400).json({ error: 'notes exceeds 2000 character limit' })
+  }
   if (!personaId || !PERSONAS_MAP[personaId]) {
     return res.status(400).json({ error: `Unknown personaId: ${personaId}` })
   }

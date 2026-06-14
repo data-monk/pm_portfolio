@@ -6,7 +6,7 @@ const SECRET = () => {
   return process.env.JWT_SECRET
 }
 
-function sign(payload, expiresIn = '7d') {
+function sign(payload, expiresIn = '8h') {
   return jwt.sign(payload, SECRET(), { expiresIn })
 }
 

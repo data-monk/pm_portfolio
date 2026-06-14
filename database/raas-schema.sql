@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS drive_connections (
   refresh_token_enc   TEXT,
   token_expiry        TIMESTAMPTZ,
   status              TEXT NOT NULL DEFAULT 'DISCONNECTED' CHECK (status IN ('CONNECTED', 'ERROR', 'DISCONNECTED')),
+  oauth_nonce         TEXT,
+  oauth_nonce_exp     TIMESTAMPTZ,
   last_sync_at        TIMESTAMPTZ,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
