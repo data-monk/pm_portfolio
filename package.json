@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres -d && concurrently --names 'server,client' --prefix-colors 'yellow,cyan' 'npm --prefix server run dev' 'cd client && /usr/local/opt/node@20/bin/node ./node_modules/.bin/vite'",
-    "stop": "docker compose -f docker-compose.yml -f docker-compose.dev.yml stop postgres",
+    "dev": "/usr/local/opt/postgresql@16/bin/pg_ctl start -D /usr/local/var/postgresql@16 -l /tmp/postgres-dev.log; /usr/local/opt/node@20/bin/node ./node_modules/.bin/concurrently --names 'server,client' --prefix-colors 'yellow,cyan' 'cd server && /usr/local/opt/node@20/bin/node ./node_modules/.bin/nodemon server.js' 'cd client && /usr/local/opt/node@20/bin/node ./node_modules/.bin/vite'",
+    "stop:db": "/usr/local/opt/postgresql@16/bin/pg_ctl stop -D /usr/local/var/postgresql@16",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down"
   },
