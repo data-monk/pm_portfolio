@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
 const appsRouter = require('./routes/apps')
 const raasRouter = require('./routes/raas')
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 5001
 app.set('trust proxy', 1)
 
 // Middleware
+app.use(helmet())
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000' }))
 app.use(express.json())
 

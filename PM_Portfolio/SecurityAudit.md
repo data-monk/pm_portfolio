@@ -2,7 +2,7 @@
 
 **Audited:** 2026-06-13  
 **Last updated:** 2026-06-13  
-**Status:** In progress — 9/14 tasks complete (all 🔴 CRITICAL resolved)
+**Status:** In progress — 10/14 tasks complete (all 🔴 CRITICAL + all 🟠 HIGH resolved)
 
 Each task below is self-contained and ordered by priority. Work through them one at a time.
 
@@ -20,7 +20,7 @@ Each task below is self-contained and ordered by priority. Work through them one
 | 6 | 🟠 HIGH | Add auth middleware to App-1 routes | N/A — public demo, rate limiting sufficient |
 | 7 | 🟠 HIGH | Strip internal error messages from 500 responses | [x] |
 | 8 | 🟠 HIGH | Change weak seed credentials (admin123 / user123) | N/A — intentional for public demo |
-| 9 | 🟠 HIGH | Add Helmet.js + Nginx security headers | [ ] |
+| 9 | 🟠 HIGH | Add Helmet.js + Nginx security headers | [x] |
 | 10 | 🟡 MEDIUM | Fix OAuth callback CSRF (nonce validation) | [ ] |
 | 11 | 🟡 MEDIUM | Validate `topK` param + cap body field lengths | [ ] |
 | 12 | 🟡 MEDIUM | Shorten JWT TTL from 7d to 8h | [ ] |
