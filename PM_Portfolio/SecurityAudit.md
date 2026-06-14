@@ -13,8 +13,8 @@ Each task below is self-contained and ordered by priority. Work through them one
 |---|---|---|---|
 | 1 | 🔴 CRITICAL | Rotate OpenAI + Pinecone API keys | [x] |
 | 2 | 🔴 CRITICAL | Rotate JWT_SECRET + ENCRYPTION_KEY | [x] |
-| 3 | 🔴 CRITICAL | Create `.dockerignore` (prevent keys baking into image) | [ ] |
-| 4 | 🔴 CRITICAL | Fix wrong `CLIENT_ORIGIN` in docker-compose.yml | [ ] |
+| 3 | 🔴 CRITICAL | Create `.dockerignore` (prevent keys baking into image) | [x] |
+| 4 | 🔴 CRITICAL | Fix wrong `CLIENT_ORIGIN` in docker-compose.yml | [x] |
 | 5 | 🟠 HIGH | Add rate limiting (express-rate-limit) | [ ] |
 | 6 | 🟠 HIGH | Add auth middleware to App-1 routes | [ ] |
 | 7 | 🟠 HIGH | Strip internal error messages from 500 responses | [ ] |

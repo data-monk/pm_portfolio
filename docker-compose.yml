@@ -23,7 +23,7 @@ services:
     container_name: portfolio_server
     environment:
       PORT: 5000
-      CLIENT_ORIGIN: http://localhost
+      CLIENT_ORIGIN: https://prasunanand.com
       DB_PATH: /data/portfolio.db
       POSTGRES_URL: postgresql://raas_user:${POSTGRES_PASSWORD}@postgres:5432/raas
       JWT_SECRET: ${JWT_SECRET}
