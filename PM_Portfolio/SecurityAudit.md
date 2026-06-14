@@ -19,7 +19,7 @@ Each task below is self-contained and ordered by priority. Work through them one
 | 5 | 🟠 HIGH | Add rate limiting (express-rate-limit) | [x] |
 | 6 | 🟠 HIGH | Add auth middleware to App-1 routes | N/A — public demo, rate limiting sufficient |
 | 7 | 🟠 HIGH | Strip internal error messages from 500 responses | [x] |
-| 8 | 🟠 HIGH | Change weak seed credentials (admin123 / user123) | [x] |
+| 8 | 🟠 HIGH | Change weak seed credentials (admin123 / user123) | N/A — intentional for public demo |
 | 9 | 🟠 HIGH | Add Helmet.js + Nginx security headers | [ ] |
 | 10 | 🟡 MEDIUM | Fix OAuth callback CSRF (nonce validation) | [ ] |
 | 11 | 🟡 MEDIUM | Validate `topK` param + cap body field lengths | [ ] |
