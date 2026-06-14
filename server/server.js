@@ -15,8 +15,8 @@ app.use(express.json())
 
 // Rate limiting
 app.use('/api/raas/auth/login', rateLimit({ windowMs: 15 * 60_000, max: 20, standardHeaders: true, legacyHeaders: false }))
-app.use('/api/app-1/reply', rateLimit({ windowMs: 60_000, max: 15, standardHeaders: true, legacyHeaders: false }))
-app.use('/api/raas/research/query', rateLimit({ windowMs: 60_000, max: 20, standardHeaders: true, legacyHeaders: false }))
+app.use('/api/app-1/reply', rateLimit({ windowMs: 60_000, max: 30, standardHeaders: true, legacyHeaders: false }))
+app.use('/api/raas/research/query', rateLimit({ windowMs: 60_000, max: 40, standardHeaders: true, legacyHeaders: false }))
 
 // Routes
 app.use('/api/apps', appsRouter)
