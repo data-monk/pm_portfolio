@@ -219,6 +219,21 @@ async def search(
                 if ld["id"] in enriched_by_id:
                     ld.update(enriched_by_id[ld["id"]])
 
+    # SQL lets listings with no cached commute pass through so they can be enriched above.
+    # After enrichment, drop any that still exceed max_commute.
+    if max_commute and destination_lat is not None:
+        def _within_budget(ld: dict) -> bool:
+            c = ld.get("commute")
+            if c is None:
+                return True  # no route found or no coords — keep
+            secs = (
+                c.commute_time_seconds
+                if hasattr(c, "commute_time_seconds")
+                else c.get("commute_time_seconds")
+            )
+            return secs is None or secs <= max_commute
+        listing_dicts = [ld for ld in listing_dicts if _within_budget(ld)]
+
     listing_objs = [ListingWithCommute(**ld) for ld in listing_dicts]
 
     pages = max(1, (total + page_size - 1) // page_size)
