@@ -209,6 +209,25 @@ const ResultsPage: React.FC = () => {
       ? { lat: filters.destination_lat, lng: filters.destination_lng, label: filters.destination_label }
       : null;
 
+  // Guard: no destination means useListings is disabled and nothing will load
+  if (!destination) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+        <p className="text-2xl mb-3" aria-hidden="true">🗺️</p>
+        <p className="text-slate-300 font-medium mb-2">No destination set</p>
+        <p className="text-slate-500 text-sm mb-6">
+          Enter your workplace or destination to search apartments by commute time.
+        </p>
+        <Link
+          to="/apps/commute-search"
+          className="px-4 py-2 rounded-lg border border-[#00d4ff] text-[#00d4ff] text-sm hover:bg-[rgba(0,212,255,0.08)] transition-colors"
+        >
+          ← Back to Search
+        </Link>
+      </div>
+    );
+  }
+
   const currentCount = (filters.page ?? 1) * 20;
   const hasNextPage = total > currentCount;
 

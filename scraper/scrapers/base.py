@@ -44,6 +44,15 @@ class BaseScraper(ABC):
         self._password = os.getenv("BRIGHTDATA_PASSWORD", "")
         self._use_mock = os.getenv("USE_MOCK_DATA", "false").lower() == "true"
 
+        # If proxy is required but credentials are absent, skip the scraper entirely
+        # rather than hanging through 750s of retries before returning mock data.
+        if use_proxy and not (self._username and self._password):
+            logger.info(
+                "%s: proxy required but BRIGHTDATA_USERNAME/PASSWORD not set — using mock data",
+                source_name,
+            )
+            self._use_mock = True
+
     # ── Proxy URL builder ─────────────────────────────────────────────────────
 
     def get_proxy_url(self, session_id: str | None = None) -> str | None:

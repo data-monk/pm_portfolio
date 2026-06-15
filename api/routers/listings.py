@@ -233,6 +233,8 @@ async def search(
             )
             return secs is None or secs <= max_commute
         listing_dicts = [ld for ld in listing_dicts if _within_budget(ld)]
+        # Rebase total to the post-filter count so pagination reflects actual results
+        total = len(listing_dicts) if len(listing_dicts) < page_size else total
 
     listing_objs = [ListingWithCommute(**ld) for ld in listing_dicts]
 
