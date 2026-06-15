@@ -298,7 +298,13 @@ def _map_streeteasy(raw: dict) -> dict:
         "price": raw.get("price") or raw.get("listingPrice"),
         "deposit": raw.get("deposit"),
         "fee_type": "no_fee" if raw.get("noFee") else raw.get("feeType"),
-        "listing_url": raw.get("listingUrl") or raw.get("url", ""),
+        "listing_url": (
+            raw.get("listingUrl") or raw.get("url")
+            or (
+                f"https://streeteasy.com/rental/{raw.get('listingId') or raw.get('id')}"
+                if raw.get("listingId") or raw.get("id") else ""
+            )
+        ),
         "image_urls": raw.get("photoUrls") or raw.get("images") or [],
         "description": raw.get("description") or raw.get("listingDescription"),
         "has_doorman": raw.get("hasDoorman", False),

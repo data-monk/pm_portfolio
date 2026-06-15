@@ -144,7 +144,7 @@ LISTINGS = [
         "has_elevator": True, "has_laundry_in_bldg": True, "has_ac": True,
         "fee_type": "no_fee",
         "description": "Bright 2BR in Central Harlem, steps from the 2/3 subway.",
-        "listing_url": "https://www.zillow.com/homedetails/2050-adam-clayton-powell-blvd-new-york",
+        "listing_url": "https://www.zillow.com/homedetails/2050-adam-clayton-powell-blvd-new-york-ny-10027",
     },
     # ── Manhattan: Washington Heights ───────────────────────────────────────────
     {
@@ -726,7 +726,7 @@ async def seed(dsn: str) -> None:
                     $18, $19, $20, $21, $22, $23,
                     $24, $25, $26, TRUE
                 )
-                ON CONFLICT (source_id, external_id) DO NOTHING
+                ON CONFLICT (source_id, external_id) DO UPDATE SET listing_url = EXCLUDED.listing_url
             """,
                 source_id,
                 listing["external_id"],
