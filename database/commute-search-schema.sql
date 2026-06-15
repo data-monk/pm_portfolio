@@ -1,7 +1,6 @@
--- CommuteFirst (App 5) — PostgreSQL + PostGIS Schema
--- Run after enabling extensions: postgis, uuid-ossp, pg_trgm
+-- CommuteFirst (App 5) — PostgreSQL Schema (no PostGIS required)
+-- Spatial queries use Haversine formula inline; bounding-box index for speed.
 
-CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
@@ -50,14 +49,15 @@ CREATE TABLE IF NOT EXISTS cs_listings (
     external_id         VARCHAR(255)  NOT NULL,
     scrape_job_id       UUID          REFERENCES cs_scrape_jobs(id) ON DELETE SET NULL,
 
-    -- Location
+    -- Location (plain lat/lng — no PostGIS required)
     address_line1       VARCHAR(255),
     address_line2       VARCHAR(255),
     city                VARCHAR(128)  NOT NULL,
     state               VARCHAR(64)   NOT NULL,
     zip_code            VARCHAR(16),
     neighborhood        VARCHAR(128),
-    coordinates         GEOGRAPHY(POINT, 4326),
+    latitude            NUMERIC(9,6),
+    longitude           NUMERIC(9,6),
 
     -- Property
     listing_type        VARCHAR(32)   NOT NULL DEFAULT 'rental'
@@ -94,9 +94,6 @@ CREATE TABLE IF NOT EXISTS cs_listings (
     listing_url         TEXT    NOT NULL,
     image_urls          TEXT[]  NOT NULL DEFAULT '{}',
     description         TEXT,
-    description_tsv     TSVECTOR GENERATED ALWAYS AS (
-                            to_tsvector('english', COALESCE(description,''))
-                        ) STORED,
     available_date      DATE,
     is_active           BOOLEAN NOT NULL DEFAULT TRUE,
     raw_metadata        JSONB   NOT NULL DEFAULT '{}',
@@ -111,44 +108,39 @@ CREATE TABLE IF NOT EXISTS cs_listings (
     CONSTRAINT uq_cs_source_external UNIQUE (source_id, external_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_cs_listings_coordinates     ON cs_listings USING GIST(coordinates);
-CREATE INDEX IF NOT EXISTS idx_cs_listings_city_price      ON cs_listings(city, price)            WHERE is_active = TRUE;
-CREATE INDEX IF NOT EXISTS idx_cs_listings_type_beds       ON cs_listings(listing_type, bedrooms) WHERE is_active = TRUE;
-CREATE INDEX IF NOT EXISTS idx_cs_listings_active          ON cs_listings(is_active, last_seen_at DESC);
-CREATE INDEX IF NOT EXISTS idx_cs_listings_description_fts ON cs_listings USING GIN(description_tsv);
-CREATE INDEX IF NOT EXISTS idx_cs_listings_address_trgm    ON cs_listings USING GIN(address_line1 gin_trgm_ops);
-CREATE INDEX IF NOT EXISTS idx_cs_listings_zip             ON cs_listings(zip_code)               WHERE is_active = TRUE;
+-- Bounding-box indexes speed up lat/lng range filters
+CREATE INDEX IF NOT EXISTS idx_cs_listings_lat          ON cs_listings(latitude)            WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_cs_listings_lng          ON cs_listings(longitude)           WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_cs_listings_city_price   ON cs_listings(city, price)         WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_cs_listings_type_beds    ON cs_listings(listing_type, bedrooms) WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_cs_listings_active       ON cs_listings(is_active, last_seen_at DESC);
+CREATE INDEX IF NOT EXISTS idx_cs_listings_address_trgm ON cs_listings USING GIN(address_line1 gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_cs_listings_zip          ON cs_listings(zip_code)            WHERE is_active = TRUE;
 
 -- ── COMMUTE CACHE ─────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS cs_commute_cache (
     id                          UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),
     listing_id                  UUID         NOT NULL REFERENCES cs_listings(id) ON DELETE CASCADE,
 
-    -- Destination
     dest_lat                    NUMERIC(9,6) NOT NULL,
     dest_lng                    NUMERIC(9,6) NOT NULL,
     dest_label                  VARCHAR(255),
 
-    -- Request params
     transport_mode              VARCHAR(32)  NOT NULL
                                 CHECK (transport_mode IN ('driving','transit','walking','bicycling')),
     departure_epoch             BIGINT,
 
-    -- Distance Matrix response
     duration_seconds            INT  CHECK (duration_seconds >= 0),
     duration_in_traffic_seconds INT  CHECK (duration_in_traffic_seconds >= 0),
     distance_meters             INT  CHECK (distance_meters >= 0),
 
-    -- Transit-specific
     transit_steps               JSONB,
     transfer_count              INT  CHECK (transfer_count >= 0),
     transit_lines               TEXT[],
 
-    -- API metadata
     gm_status                   VARCHAR(64) NOT NULL,
     raw_response                JSONB,
 
-    -- Cache management
     fetched_at                  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expires_at                  TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '6 hours'),
     is_valid                    BOOLEAN     NOT NULL DEFAULT TRUE,

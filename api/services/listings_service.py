@@ -1,5 +1,6 @@
 """
-ListingsService — parameterized SQL builder for listing search with PostGIS + commute filters.
+ListingsService — parameterized SQL builder for listing search with Haversine radius + commute filters.
+No PostGIS dependency — uses bounding-box index + Haversine formula for spatial filtering.
 """
 from __future__ import annotations
 
@@ -31,15 +32,27 @@ def _build_where_clauses(
     params: list[Any] = []
     n = base_params + 1  # Start after the commute join params
 
-    # Destination radius filter (50km)
+    # Destination radius filter — bounding box first (uses index), then Haversine
     dest_lat = filters.get("destination_lat")
     dest_lng = filters.get("destination_lng")
     if dest_lat is not None and dest_lng is not None:
+        # Bounding box pre-filter (≈±50km at NYC latitude)
         clauses.append(
-            f"ST_DWithin(l.coordinates, ST_SetSRID(ST_MakePoint(${n+1}, ${n}), 4326)::geography, 50000)"
+            f"l.latitude  BETWEEN (${n}::float - 0.45) AND (${n}::float + 0.45)"
         )
-        params.append(dest_lat)  # $n
-        params.append(dest_lng)  # $n+1
+        clauses.append(
+            f"l.longitude BETWEEN (${n+1}::float - 0.55) AND (${n+1}::float + 0.55)"
+        )
+        # Exact Haversine check within 50km
+        clauses.append(f"""
+            6371000.0 * acos(LEAST(1.0,
+                cos(radians(l.latitude)) * cos(radians(${n}::float))
+                * cos(radians(l.longitude) - radians(${n+1}::float))
+                + sin(radians(l.latitude)) * sin(radians(${n}::float))
+            )) <= 50000
+        """)
+        params.append(float(dest_lat))   # $n
+        params.append(float(dest_lng))   # $n+1
         n += 2
 
     # Price filters

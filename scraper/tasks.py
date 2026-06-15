@@ -189,12 +189,8 @@ async def _upsert_listing(
         # Update coordinates if we now have them
         if has_coordinates:
             await conn.execute(
-                """
-                UPDATE cs_listings
-                SET coordinates = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
-                WHERE id = $3
-                """,
-                normalized.longitude, normalized.latitude, existing["id"],
+                "UPDATE cs_listings SET latitude = $1, longitude = $2 WHERE id = $3",
+                normalized.latitude, normalized.longitude, existing["id"],
             )
         return listing_id, False
 
@@ -244,15 +240,11 @@ async def _upsert_listing(
             normalized.available_date, normalized.listed_at,
             json.dumps(normalized.raw_metadata),
         )
-        # Set coordinates separately (PostGIS function call)
+        # Set coordinates if available
         if normalized.latitude is not None and normalized.longitude is not None:
             await conn.execute(
-                """
-                UPDATE cs_listings
-                SET coordinates = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
-                WHERE id = $3
-                """,
-                normalized.longitude, normalized.latitude, new_id,
+                "UPDATE cs_listings SET latitude = $1, longitude = $2 WHERE id = $3",
+                normalized.latitude, normalized.longitude, new_id,
             )
         return new_id, True
 
@@ -476,14 +468,13 @@ def batch_commute_enrich(
         conn = await asyncpg.connect(CS_DSN)
 
         try:
-            # Fetch coordinates for all listing IDs
+            # Fetch lat/lng for all listing IDs
             rows = await conn.fetch(
                 """
-                SELECT id,
-                       ST_Y(coordinates::geometry) AS lat,
-                       ST_X(coordinates::geometry) AS lng
+                SELECT id, latitude AS lat, longitude AS lng
                 FROM cs_listings
-                WHERE id = ANY($1::uuid[]) AND coordinates IS NOT NULL
+                WHERE id = ANY($1::uuid[])
+                  AND latitude IS NOT NULL AND longitude IS NOT NULL
                 """,
                 listing_ids,
             )

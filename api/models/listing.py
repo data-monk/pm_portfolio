@@ -8,7 +8,7 @@ from datetime import date, datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
 
 
 # ── Commute sub-models ────────────────────────────────────────────────────────
@@ -88,10 +88,19 @@ class ListingBase(BaseModel):
     scraped_at: Optional[datetime] = None
     last_seen_at: Optional[datetime] = None
 
+    @computed_field
+    @property
+    def title(self) -> str:
+        beds = (
+            "Studio" if not self.bedrooms or self.bedrooms == 0
+            else f"{int(self.bedrooms)} BR"
+        )
+        loc = self.neighborhood or self.address_line1 or self.city
+        return f"{beds} in {loc}"
+
     @field_validator("price_monthly_cents", mode="before")
     @classmethod
     def compute_monthly_cents(cls, v, info):
-        """Compute price_monthly_cents from price if not provided."""
         if v == 0 and "price" in (info.data or {}):
             return int(info.data["price"] * 100)
         return v
@@ -99,11 +108,25 @@ class ListingBase(BaseModel):
     @field_validator("thumbnail_url", mode="before")
     @classmethod
     def pick_thumbnail(cls, v, info):
-        """Use first image_url as thumbnail if not explicitly set."""
         if v is None:
             image_urls = (info.data or {}).get("image_urls", [])
             return image_urls[0] if image_urls else None
         return v
+
+    @model_validator(mode="after")
+    def populate_amenities(self) -> ListingBase:
+        if not self.amenities:
+            built = []
+            if self.has_doorman:       built.append("doorman")
+            if self.has_elevator:      built.append("elevator")
+            if self.has_gym:           built.append("gym")
+            if self.has_laundry_in_unit: built.append("laundry in unit")
+            if self.has_laundry_in_bldg: built.append("laundry in building")
+            if self.has_dishwasher:    built.append("dishwasher")
+            if self.has_ac:            built.append("AC")
+            if self.has_outdoor_space: built.append("outdoor space")
+            self.amenities = built
+        return self
 
     model_config = {"populate_by_name": True}
 

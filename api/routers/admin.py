@@ -84,6 +84,7 @@ async def trigger_scrape(
 @router.get("/sources")
 @limiter.limit("10/minute")
 async def get_source_health(
+    request: Request,
     x_admin_secret: str = Header(..., alias="X-Admin-Secret"),
     pool=Depends(get_pool),
 ):

@@ -242,6 +242,7 @@ async def search(
 @router.get("/{listing_id}", response_model=ListingDetail)
 @limiter.limit("60/minute")
 async def get_listing(
+    request: Request,
     listing_id: str,
     destination_lat: Optional[float] = Query(None),
     destination_lng: Optional[float] = Query(None),

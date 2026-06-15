@@ -131,7 +131,7 @@ export async function searchListings(filters: SearchFilters): Promise<SearchResp
   params.set('page', String(filters.page ?? 1));
   params.set('sort', filters.sort);
 
-  return apiFetch<SearchResponse>(`/api/listings/search?${params.toString()}`);
+  return apiFetch<SearchResponse>(`/api/commute-search/listings/search?${params.toString()}`);
 }
 
 export async function getListingById(
@@ -161,7 +161,7 @@ export async function getListingById(
   }
   if (mode) params.set('mode', mode);
 
-  return apiFetch<ListingDetail>(`/api/listings/${id}?${params.toString()}`);
+  return apiFetch<ListingDetail>(`/api/commute-search/listings/${id}?${params.toString()}`);
 }
 
 export async function saveListing(sessionToken: string, listingId: string): Promise<void> {
@@ -169,7 +169,7 @@ export async function saveListing(sessionToken: string, listingId: string): Prom
     await delay(100);
     return;
   }
-  await apiFetch<{ id: string }>('/api/saved', {
+  await apiFetch<{ id: string }>('/api/commute-search/saved/', {
     method: 'POST',
     body: JSON.stringify({ session_token: sessionToken, listing_id: listingId }),
   });
@@ -183,7 +183,7 @@ export async function getSavedListings(sessionToken: string): Promise<ListingWit
     const ids: string[] = raw ? (JSON.parse(raw) as string[]) : [];
     return MOCK_LISTINGS.filter((l) => ids.includes(l.id));
   }
-  return apiFetch<ListingWithCommute[]>(`/api/saved?session_token=${encodeURIComponent(sessionToken)}`);
+  return apiFetch<ListingWithCommute[]>(`/api/commute-search/saved/?session_token=${encodeURIComponent(sessionToken)}`);
 }
 
 export async function unsaveListing(sessionToken: string, listingId: string): Promise<void> {
@@ -191,7 +191,7 @@ export async function unsaveListing(sessionToken: string, listingId: string): Pr
     await delay(100);
     return;
   }
-  await apiFetch<void>(`/api/saved/${listingId}?session_token=${encodeURIComponent(sessionToken)}`, {
+  await apiFetch<void>(`/api/commute-search/saved/${listingId}?session_token=${encodeURIComponent(sessionToken)}`, {
     method: 'DELETE',
   });
 }
@@ -207,7 +207,7 @@ export async function getSourceHealth(): Promise<SourceHealth[]> {
       { name: 'facebook_marketplace', is_active: false, last_scraped_at: null },
     ];
   }
-  return apiFetch<SourceHealth[]>('/api/sources');
+  return apiFetch<SourceHealth[]>('/api/commute-search/admin/sources');
 }
 
 export { MOCK_DESTINATION };

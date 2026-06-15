@@ -1,13 +1,31 @@
+from __future__ import annotations
 """
 Parameterized SQL query strings for CommuteFirst API.
 All queries use $N positional parameters (asyncpg style).
-Table prefix: cs_
+Spatial queries use Haversine formula — no PostGIS required.
+"""
+
+# Haversine distance in meters between (lat1,lng1) and (lat2,lng2)
+# Using PostgreSQL built-in trig functions
+HAVERSINE_METERS = """
+    6371000.0 * acos(
+        LEAST(1.0,
+            cos(radians(l.latitude)) * cos(radians($1::float))
+            * cos(radians(l.longitude) - radians($2::float))
+            + sin(radians(l.latitude)) * sin(radians($1::float))
+        )
+    )
+"""
+
+# Bounding-box pre-filter (≈±50km) to use the lat/lng indexes before Haversine
+BBOX_FILTER = """
+    l.latitude  BETWEEN ($1::float - 0.45) AND ($1::float + 0.45)
+    AND l.longitude BETWEEN ($2::float - 0.55) AND ($2::float + 0.55)
 """
 
 # ── Listing search ────────────────────────────────────────────────────────────
-# Parameters (positional — caller builds the $N list dynamically):
-# Used by listings_service.py which builds the WHERE clause dynamically.
-# This is the base SELECT; the service appends WHERE conditions.
+# Fixed params: $1=dest_lat $2=dest_lng $3=mode $4=departure_epoch
+# Dynamic WHERE params start at $5
 
 SEARCH_LISTINGS_BASE = """
 SELECT
@@ -21,8 +39,8 @@ SELECT
     l.state,
     l.zip_code,
     l.neighborhood,
-    ST_Y(l.coordinates::geometry)   AS latitude,
-    ST_X(l.coordinates::geometry)   AS longitude,
+    l.latitude,
+    l.longitude,
     l.listing_type,
     l.property_type,
     l.bedrooms,
@@ -71,7 +89,6 @@ LEFT JOIN cs_commute_cache cc
     AND cc.expires_at         > NOW()
 """
 
-# COUNT query (same JOINs, no ORDER/LIMIT)
 COUNT_LISTINGS_BASE = """
 SELECT COUNT(*) AS total
 FROM cs_listings l
@@ -100,8 +117,8 @@ SELECT
     l.state,
     l.zip_code,
     l.neighborhood,
-    ST_Y(l.coordinates::geometry)   AS latitude,
-    ST_X(l.coordinates::geometry)   AS longitude,
+    l.latitude,
+    l.longitude,
     l.listing_type,
     l.property_type,
     l.bedrooms,
@@ -153,10 +170,6 @@ WHERE l.id = $1::uuid
 """
 
 # ── Commute cache upsert ──────────────────────────────────────────────────────
-# $1=listing_id $2=dest_lat $3=dest_lng $4=dest_label $5=transport_mode
-# $6=departure_epoch $7=duration_seconds $8=duration_in_traffic_seconds
-# $9=distance_meters $10=transit_steps(jsonb) $11=transfer_count
-# $12=transit_lines $13=gm_status $14=raw_response(jsonb)
 UPSERT_COMMUTE_CACHE = """
 INSERT INTO cs_commute_cache (
     listing_id, dest_lat, dest_lng, dest_label, transport_mode, departure_epoch,
@@ -185,8 +198,6 @@ DO UPDATE SET
     is_valid                    = TRUE
 """
 
-# ── Commute cache lookup ──────────────────────────────────────────────────────
-# $1=listing_id $2=dest_lat $3=dest_lng $4=transport_mode $5=departure_epoch
 GET_COMMUTE_CACHE = """
 SELECT
     duration_seconds,
@@ -208,8 +219,29 @@ WHERE listing_id        = $1::uuid
 LIMIT 1
 """
 
+# ── Batch commute cache lookup ────────────────────────────────────────────────
+# $1 = array of listing UUIDs, $2=dest_lat $3=dest_lng $4=mode $5=departure_epoch
+GET_COMMUTE_CACHE_BATCH = """
+SELECT
+    listing_id::text,
+    duration_seconds,
+    duration_in_traffic_seconds,
+    distance_meters,
+    transfer_count,
+    transit_lines,
+    transit_steps,
+    gm_status
+FROM cs_commute_cache
+WHERE listing_id        = ANY($1::uuid[])
+  AND dest_lat           = $2
+  AND dest_lng           = $3
+  AND transport_mode     = $4
+  AND (departure_epoch   = $5 OR (departure_epoch IS NULL AND $5 IS NULL))
+  AND is_valid           = TRUE
+  AND expires_at         > NOW()
+"""
+
 # ── Save listing ──────────────────────────────────────────────────────────────
-# $1=session_token $2=listing_id
 SAVE_LISTING = """
 INSERT INTO cs_saved_listings (session_token, listing_id)
 VALUES ($1::uuid, $2::uuid)
@@ -217,8 +249,6 @@ ON CONFLICT (session_token, listing_id) DO NOTHING
 RETURNING id::text
 """
 
-# ── Get saved listings ────────────────────────────────────────────────────────
-# $1=session_token $2=dest_lat $3=dest_lng $4=transport_mode $5=departure_epoch
 GET_SAVED_LISTINGS = """
 SELECT
     sl.id::text                     AS saved_id,
@@ -237,8 +267,8 @@ SELECT
     l.state,
     l.zip_code,
     l.neighborhood,
-    ST_Y(l.coordinates::geometry)   AS latitude,
-    ST_X(l.coordinates::geometry)   AS longitude,
+    l.latitude,
+    l.longitude,
     l.listing_type,
     l.property_type,
     l.bedrooms,
@@ -287,14 +317,11 @@ WHERE sl.session_token = $1::uuid
 ORDER BY sl.saved_at DESC
 """
 
-# ── Delete saved listing ──────────────────────────────────────────────────────
-# $1=session_token $2=listing_id
 DELETE_SAVED_LISTING = """
 DELETE FROM cs_saved_listings
 WHERE session_token = $1::uuid AND listing_id = $2::uuid
 """
 
-# ── Mark stale listings ───────────────────────────────────────────────────────
 MARK_STALE = """
 UPDATE cs_listings
 SET is_active = FALSE
@@ -302,7 +329,6 @@ WHERE is_active = TRUE
   AND last_seen_at < NOW() - INTERVAL '12 hours'
 """
 
-# ── Source health ─────────────────────────────────────────────────────────────
 GET_SOURCE_HEALTH = """
 SELECT
     s.id,
