@@ -11,6 +11,7 @@ services:
       - '80:80'
     depends_on:
       - server
+      - cs-api
     restart: unless-stopped
     networks:
       - portfolio_net
@@ -62,10 +63,125 @@ services:
     networks:
       - portfolio_net
 
+  # ── CommuteFirst Postgres (PostGIS) ─────────────────────────
+  cs-postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: cs_postgres
+    environment:
+      POSTGRES_DB: commute_search
+      POSTGRES_USER: cs_user
+      POSTGRES_PASSWORD: ${CS_POSTGRES_PASSWORD}
+    volumes:
+      - cs_db_data:/var/lib/postgresql/data
+      - ./database/commute-search-schema.sql:/docker-entrypoint-initdb.d/commute-search-schema.sql
+    ports:
+      - '5433:5432'
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cs_user -d commute_search"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── CommuteFirst Redis ────────────────────────────────────────
+  cs-redis:
+    image: redis:7-alpine
+    container_name: cs_redis
+    volumes:
+      - cs_redis_data:/data
+    ports:
+      - '6380:6379'
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── CommuteFirst FastAPI ──────────────────────────────────────
+  cs-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: cs_api
+    environment:
+      CS_POSTGRES_DSN: postgresql://cs_user:${CS_POSTGRES_PASSWORD}@cs-postgres:5432/commute_search
+      CS_REDIS_URL: redis://cs-redis:6379/0
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+      GOOGLE_MAPS_BROWSER_KEY: ${GOOGLE_MAPS_BROWSER_KEY}
+      ENVIRONMENT: production
+      CORS_ORIGINS: '["https://prasunanand.com"]'
+      ADMIN_SECRET: ${CS_ADMIN_SECRET}
+    ports:
+      - '8001:8001'
+    depends_on:
+      cs-postgres:
+        condition: service_healthy
+      cs-redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+
+  # ── CommuteFirst Celery Worker ────────────────────────────────
+  cs-worker:
+    build:
+      context: ./scraper
+      dockerfile: Dockerfile
+    container_name: cs_worker
+    command: celery -A celery_app worker -Q scrape,commute --loglevel=info --concurrency=4
+    environment:
+      CS_POSTGRES_DSN: postgresql://cs_user:${CS_POSTGRES_PASSWORD}@cs-postgres:5432/commute_search
+      CS_REDIS_URL: redis://cs-redis:6379/0
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+      BRIGHTDATA_USERNAME: ${BRIGHTDATA_USERNAME}
+      BRIGHTDATA_PASSWORD: ${BRIGHTDATA_PASSWORD}
+      FB_ENABLED: ${FB_ENABLED:-false}
+      FB_SESSION_PATH: /run/secrets/fb_session.json
+      USE_MOCK_DATA: ${USE_MOCK_DATA:-false}
+    depends_on:
+      cs-postgres:
+        condition: service_healthy
+      cs-redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+
+  # ── CommuteFirst Celery Beat ──────────────────────────────────
+  cs-beat:
+    build:
+      context: ./scraper
+      dockerfile: Dockerfile
+    container_name: cs_beat
+    command: celery -A celery_app beat -S redbeat.RedBeatScheduler --loglevel=info
+    environment:
+      CS_POSTGRES_DSN: postgresql://cs_user:${CS_POSTGRES_PASSWORD}@cs-postgres:5432/commute_search
+      CS_REDIS_URL: redis://cs-redis:6379/0
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+      BRIGHTDATA_USERNAME: ${BRIGHTDATA_USERNAME}
+      BRIGHTDATA_PASSWORD: ${BRIGHTDATA_PASSWORD}
+      FB_ENABLED: ${FB_ENABLED:-false}
+      USE_MOCK_DATA: ${USE_MOCK_DATA:-false}
+    depends_on:
+      cs-redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - portfolio_net
+
 volumes:
   db_data:
     driver: local
   pg_data:
+    driver: local
+  cs_db_data:
+    driver: local
+  cs_redis_data:
     driver: local
 
 networks:

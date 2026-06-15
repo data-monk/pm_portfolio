@@ -1,0 +1,157 @@
+[
+  {
+    "id": "fb_listing_001",
+    "title": "Cozy 1BR in Bushwick near L Train",
+    "description": "Bright 1 bedroom in the heart of Bushwick. Renovated kitchen, hardwood floors, great natural light. Steps from Jefferson L train stop. No fee.",
+    "price": {
+      "amount": 2400,
+      "formatted_amount": "$2,400/mo"
+    },
+    "location": {
+      "address": "83 Linden Street",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11221",
+      "neighborhood": "Bushwick",
+      "latitude": 40.7052,
+      "longitude": -73.9195
+    },
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "square_feet": 600,
+    "image_urls": [
+      "https://scontent.xx.fbcdn.net/placeholder/fb-001-a.jpg"
+    ],
+    "url": "https://www.facebook.com/marketplace/item/fb_listing_001",
+    "available_date": "2026-07-15",
+    "pets_allowed": true,
+    "has_ac": true,
+    "has_dishwasher": false,
+    "has_laundry_in_bldg": true
+  },
+  {
+    "id": "fb_listing_002",
+    "title": "Spacious 2BR Sunnyside Queens",
+    "description": "Large 2 bedroom apartment in Sunnyside, Queens. Sunny exposure, updated bathrooms, near 7 train for quick commute to Manhattan. Laundry in building.",
+    "price": {
+      "amount": 2900,
+      "formatted_amount": "$2,900/mo"
+    },
+    "location": {
+      "address": "43-05 Queens Boulevard",
+      "city": "Sunnyside",
+      "state": "NY",
+      "zip": "11104",
+      "neighborhood": "Sunnyside",
+      "latitude": 40.7435,
+      "longitude": -73.9252
+    },
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "square_feet": 950,
+    "image_urls": [
+      "https://scontent.xx.fbcdn.net/placeholder/fb-002-a.jpg",
+      "https://scontent.xx.fbcdn.net/placeholder/fb-002-b.jpg"
+    ],
+    "url": "https://www.facebook.com/marketplace/item/fb_listing_002",
+    "available_date": "2026-07-01",
+    "pets_allowed": false,
+    "has_ac": true,
+    "has_dishwasher": true,
+    "has_laundry_in_bldg": true
+  },
+  {
+    "id": "fb_listing_003",
+    "title": "Studio in Inwood near A Train",
+    "description": "Affordable studio at the top of Manhattan. Quiet street, good natural light. Direct access to A train express for downtown commute in ~35 min.",
+    "price": {
+      "amount": 1800,
+      "formatted_amount": "$1,800/mo"
+    },
+    "location": {
+      "address": "4825 Broadway",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10034",
+      "neighborhood": "Inwood",
+      "latitude": 40.8671,
+      "longitude": -73.9213
+    },
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "square_feet": 400,
+    "image_urls": [
+      "https://scontent.xx.fbcdn.net/placeholder/fb-003-a.jpg"
+    ],
+    "url": "https://www.facebook.com/marketplace/item/fb_listing_003",
+    "available_date": "2026-07-01",
+    "pets_allowed": true,
+    "has_ac": false,
+    "has_dishwasher": false,
+    "has_laundry_in_bldg": false
+  },
+  {
+    "id": "fb_listing_004",
+    "title": "3BR Family Apartment Flatbush Brooklyn",
+    "description": "Huge 3 bedroom apartment in Flatbush. Perfect for families. Eat-in kitchen, living room, near 2/5 trains and multiple bus lines.",
+    "price": {
+      "amount": 3200,
+      "formatted_amount": "$3,200/mo"
+    },
+    "location": {
+      "address": "1025 Flatbush Avenue",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11226",
+      "neighborhood": "Flatbush",
+      "latitude": 40.6462,
+      "longitude": -73.9516
+    },
+    "bedrooms": 3,
+    "bathrooms": 1,
+    "square_feet": 1100,
+    "image_urls": [
+      "https://scontent.xx.fbcdn.net/placeholder/fb-004-a.jpg",
+      "https://scontent.xx.fbcdn.net/placeholder/fb-004-b.jpg"
+    ],
+    "url": "https://www.facebook.com/marketplace/item/fb_listing_004",
+    "available_date": "2026-08-01",
+    "pets_allowed": true,
+    "has_ac": false,
+    "has_dishwasher": false,
+    "has_laundry_in_bldg": true
+  },
+  {
+    "id": "fb_listing_005",
+    "title": "Sunny 1BR in Park Slope Brooklyn",
+    "description": "Beautiful 1BR in sought-after Park Slope. Exposed brick, high ceilings, walk to Prospect Park. Close to B/Q/R/F trains. No broker fee.",
+    "price": {
+      "amount": 3600,
+      "formatted_amount": "$3,600/mo"
+    },
+    "location": {
+      "address": "145 7th Avenue",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11215",
+      "neighborhood": "Park Slope",
+      "latitude": 40.6709,
+      "longitude": -73.9793
+    },
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "square_feet": 700,
+    "image_urls": [
+      "https://scontent.xx.fbcdn.net/placeholder/fb-005-a.jpg",
+      "https://scontent.xx.fbcdn.net/placeholder/fb-005-b.jpg"
+    ],
+    "url": "https://www.facebook.com/marketplace/item/fb_listing_005",
+    "available_date": "2026-07-15",
+    "pets_allowed": true,
+    "has_ac": true,
+    "has_dishwasher": true,
+    "has_laundry_in_bldg": true,
+    "has_elevator": false,
+    "has_gym": false
+  }
+]

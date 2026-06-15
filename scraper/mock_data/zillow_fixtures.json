@@ -1,0 +1,207 @@
+[
+  {
+    "zpid": "98765001",
+    "address": "150 Rivington Street",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10002",
+    "latLong": {
+      "latitude": 40.7181,
+      "longitude": -73.9878
+    },
+    "neighborhood": "Lower East Side",
+    "price": "$3,800/mo",
+    "unformattedPrice": 3800,
+    "beds": 1,
+    "baths": 1,
+    "area": 675,
+    "detailUrl": "/homedetails/150-Rivington-St-New-York-NY-10002/98765001_zpid/",
+    "imgSrc": "https://photos.zillowstatic.com/placeholder/z-001.jpg",
+    "hdpData": {
+      "homeInfo": {
+        "streetAddress": "150 Rivington Street",
+        "city": "New York",
+        "state": "NY",
+        "zipcode": "10002",
+        "latitude": 40.7181,
+        "longitude": -73.9878,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "livingArea": 675,
+        "price": 3800,
+        "neighborhood": "Lower East Side",
+        "description": "Trendy 1BR on the Lower East Side. Exposed brick walls, stainless appliances, hardwood floors. Walk to F/J/M/Z trains."
+      }
+    },
+    "has_elevator": true,
+    "has_ac": true,
+    "has_dishwasher": true,
+    "pets_allowed": false
+  },
+  {
+    "zpid": "98765002",
+    "address": "420 West 42nd Street",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10036",
+    "latLong": {
+      "latitude": 40.7588,
+      "longitude": -74.0001
+    },
+    "neighborhood": "Hell's Kitchen",
+    "price": "$5,500/mo",
+    "unformattedPrice": 5500,
+    "beds": 2,
+    "baths": 2,
+    "area": 1200,
+    "detailUrl": "/homedetails/420-W-42nd-St-New-York-NY-10036/98765002_zpid/",
+    "imgSrc": "https://photos.zillowstatic.com/placeholder/z-002.jpg",
+    "hdpData": {
+      "homeInfo": {
+        "streetAddress": "420 West 42nd Street",
+        "city": "New York",
+        "state": "NY",
+        "zipcode": "10036",
+        "latitude": 40.7588,
+        "longitude": -74.0001,
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "livingArea": 1200,
+        "price": 5500,
+        "neighborhood": "Hell's Kitchen",
+        "description": "Luxury 2BR/2BA in brand-new Hell's Kitchen tower. Floor-to-ceiling windows with Hudson River views, chef's kitchen, in-unit W/D."
+      }
+    },
+    "has_doorman": true,
+    "has_elevator": true,
+    "has_gym": true,
+    "has_laundry_in_unit": true,
+    "has_ac": true,
+    "has_dishwasher": true,
+    "has_outdoor_space": true,
+    "pets_allowed": true,
+    "fee_type": "no_fee"
+  },
+  {
+    "zpid": "98765003",
+    "address": "85-20 Queens Boulevard",
+    "city": "Queens",
+    "state": "NY",
+    "zip_code": "11373",
+    "latLong": {
+      "latitude": 40.7335,
+      "longitude": -73.8699
+    },
+    "neighborhood": "Elmhurst",
+    "price": "$2,600/mo",
+    "unformattedPrice": 2600,
+    "beds": 2,
+    "baths": 1,
+    "area": 950,
+    "detailUrl": "/homedetails/85-20-Queens-Blvd-Queens-NY-11373/98765003_zpid/",
+    "imgSrc": "https://photos.zillowstatic.com/placeholder/z-003.jpg",
+    "hdpData": {
+      "homeInfo": {
+        "streetAddress": "85-20 Queens Boulevard",
+        "city": "Queens",
+        "state": "NY",
+        "zipcode": "11373",
+        "latitude": 40.7335,
+        "longitude": -73.8699,
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "livingArea": 950,
+        "price": 2600,
+        "neighborhood": "Elmhurst",
+        "description": "Spacious 2BR near Queens Boulevard. Close to R/M trains, diverse dining scene. Laundry on-site."
+      }
+    },
+    "has_elevator": false,
+    "has_laundry_in_bldg": true,
+    "has_ac": true,
+    "pets_allowed": true
+  },
+  {
+    "zpid": "98765004",
+    "address": "63 Wall Street",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10005",
+    "latLong": {
+      "latitude": 40.7063,
+      "longitude": -74.0085
+    },
+    "neighborhood": "Financial District",
+    "price": "$4,500/mo",
+    "unformattedPrice": 4500,
+    "beds": 1,
+    "baths": 1,
+    "area": 830,
+    "detailUrl": "/homedetails/63-Wall-St-New-York-NY-10005/98765004_zpid/",
+    "imgSrc": "https://photos.zillowstatic.com/placeholder/z-004.jpg",
+    "hdpData": {
+      "homeInfo": {
+        "streetAddress": "63 Wall Street",
+        "city": "New York",
+        "state": "NY",
+        "zipcode": "10005",
+        "latitude": 40.7063,
+        "longitude": -74.0085,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "livingArea": 830,
+        "price": 4500,
+        "neighborhood": "Financial District",
+        "description": "Stunning conversion in iconic FiDi skyscraper. 14-foot ceilings, original architectural details, concierge, gym. Walk to 2/3/4/5/J/Z trains."
+      }
+    },
+    "has_doorman": true,
+    "has_elevator": true,
+    "has_gym": true,
+    "has_laundry_in_bldg": true,
+    "has_ac": true,
+    "has_dishwasher": true,
+    "pets_allowed": false,
+    "fee_type": "no_fee"
+  },
+  {
+    "zpid": "98765005",
+    "address": "3420 Broadway",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10031",
+    "latLong": {
+      "latitude": 40.8258,
+      "longitude": -73.9484
+    },
+    "neighborhood": "Washington Heights",
+    "price": "$2,300/mo",
+    "unformattedPrice": 2300,
+    "beds": 3,
+    "baths": 1,
+    "area": 1150,
+    "detailUrl": "/homedetails/3420-Broadway-New-York-NY-10031/98765005_zpid/",
+    "imgSrc": "https://photos.zillowstatic.com/placeholder/z-005.jpg",
+    "hdpData": {
+      "homeInfo": {
+        "streetAddress": "3420 Broadway",
+        "city": "New York",
+        "state": "NY",
+        "zipcode": "10031",
+        "latitude": 40.8258,
+        "longitude": -73.9484,
+        "bedrooms": 3,
+        "bathrooms": 1,
+        "livingArea": 1150,
+        "price": 2300,
+        "neighborhood": "Washington Heights",
+        "description": "Large 3BR in Washington Heights. Pre-war details, updated kitchen, close to A train express stop at 181st. Excellent commute to Midtown."
+      }
+    },
+    "has_elevator": false,
+    "has_laundry_in_bldg": true,
+    "has_ac": false,
+    "pets_allowed": true,
+    "fee_type": "op_fee"
+  }
+]

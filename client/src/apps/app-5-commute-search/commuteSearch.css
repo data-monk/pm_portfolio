@@ -1,0 +1,176 @@
+.cs-app {
+  min-height: 100vh;
+  background: #0f0f13;
+  color: #e2e8f0;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* Commute badge colors */
+.cs-badge-green  { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+.cs-badge-yellow { background: rgba(234,179,8,0.15);  color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+.cs-badge-orange { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+.cs-badge-red    { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+/* MTA line badge colors — used in CommuteBreakdown */
+.cs-line-A, .cs-line-C, .cs-line-E { background: #0039A6; color: #fff; }
+.cs-line-B, .cs-line-D, .cs-line-F, .cs-line-M { background: #FF6319; color: #fff; }
+.cs-line-G { background: #6CBE45; color: #fff; }
+.cs-line-J, .cs-line-Z { background: #996633; color: #fff; }
+.cs-line-L { background: #A7A9AC; color: #fff; }
+.cs-line-N, .cs-line-Q, .cs-line-R, .cs-line-W { background: #FCCC0A; color: #000; }
+.cs-line-1, .cs-line-2, .cs-line-3 { background: #EE352E; color: #fff; }
+.cs-line-4, .cs-line-5, .cs-line-6 { background: #00933C; color: #fff; }
+.cs-line-7 { background: #B933AD; color: #fff; }
+.cs-line-S { background: #808183; color: #fff; }
+
+/* Listing card hover */
+.cs-listing-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.cs-listing-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,255,0.12); }
+
+/* Route step connector line */
+.cs-route-connector { border-left: 2px dashed rgba(255,255,255,0.15); margin-left: 11px; }
+
+/* Mobile bottom drawer */
+.cs-drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; }
+.cs-drawer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; border-radius: 16px 16px 0 0; max-height: 85vh; overflow-y: auto; }
+
+/* Skeleton loading */
+.cs-skeleton { background: linear-gradient(90deg, #1e1e2e 25%, #2a2a3e 50%, #1e1e2e 75%); background-size: 200% 100%; animation: cs-shimmer 1.5s infinite; }
+@keyframes cs-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* Slider track */
+.cs-app input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #2a2a3e;
+  outline: none;
+  cursor: pointer;
+}
+.cs-app input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #00d4ff;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+.cs-app input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #00d4ff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+
+/* Snackbar / toast */
+.cs-snackbar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: #16161e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: cs-slide-up 0.2s ease;
+}
+@keyframes cs-slide-up { from { transform: translateX(-50%) translateY(20px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+
+/* Map placeholder */
+.cs-map-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Comparison table */
+.cs-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+}
+.cs-comparison-table th,
+.cs-comparison-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  min-width: 160px;
+  white-space: nowrap;
+}
+.cs-comparison-table th {
+  background: #1e1e2e;
+  font-weight: 600;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.cs-comparison-best {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+/* Filter chips */
+.cs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.3);
+  color: #00d4ff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.cs-chip:hover { background: rgba(0,212,255,0.2); }
+
+/* Segmented control */
+.cs-segmented {
+  display: flex;
+  background: #1e1e2e;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+.cs-segmented button {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.cs-segmented button.active {
+  background: #00d4ff;
+  color: #0f0f13;
+  font-weight: 600;
+}
+.cs-segmented button:hover:not(.active) {
+  background: rgba(255,255,255,0.06);
+  color: #e2e8f0;
+}

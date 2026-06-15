@@ -40,4 +40,12 @@ VALUES
     '/apps/raas',
     '["Pinecone","Claude Haiku","OpenAI Embeddings","Google Drive","Postgres"]',
     3
+  ),
+  (
+    'CommuteFirst',
+    'Real estate aggregator ranked by commute time: scrapes Zillow, StreetEasy, and Apartments.com, then enriches every listing with Google Maps peak-hour transit, driving, walking, and biking times so you find the apartment that actually fits your life.',
+    NULL,
+    '/apps/commute-search',
+    '["Google Maps API","Python/FastAPI","PostgreSQL/PostGIS","Playwright","Redis","React"]',
+    4
   );

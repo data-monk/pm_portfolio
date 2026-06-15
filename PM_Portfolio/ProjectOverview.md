@@ -46,6 +46,7 @@ portfolio-monorepo/
 | 2 | AI Chatbot | `/apps/chatbot` | Placeholder | — | — |
 | 3 | RAG as a Service | `/apps/raas` | Full MVP built; needs env vars + Pinecone index | Postgres, JWT, Google Drive, Pinecone | [raas/](raas/) |
 | 4 | Violet Crumbs | `/apps/violet-crumbs` | Frontend MVP (no backend) | TypeScript, shadcn/ui, Framer Motion | [violet-crumbs/](violet-crumbs/) |
+| 5 | CommuteFirst | `/apps/commute-search` | In Development (Phase 2 complete) | Python/FastAPI, Playwright, PostGIS, Redis, Celery, Google Maps API | [commute-search/](commute-search/) |
 
 ## Adding a New App
 

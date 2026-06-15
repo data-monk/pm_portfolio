@@ -14,8 +14,9 @@ FROM nginx:1.27-alpine AS production
 # Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config for SPA routing
+# Copy custom nginx config for SPA routing + rate limiting zone definitions
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx_rate_limit.conf /etc/nginx/conf.d/rate_limit.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
