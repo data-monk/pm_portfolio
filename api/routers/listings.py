@@ -1,13 +1,15 @@
 """
-Listings router — GET /listings/search, GET /listings/{listing_id}
+Listings router — GET /listings/search, GET /listings/{listing_id},
+                  POST /listings/refresh, GET /listings/refresh/{job_id}
 """
-from __future__ import annotations
+# NOTE: do NOT add `from __future__ import annotations` here —
+# FastAPI cannot resolve BackgroundTasks type annotation under deferred eval.
 
 import json
 import logging
-from typing import Optional
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -20,6 +22,7 @@ from models.listing import (
     RouteStep,
     SearchResponse,
 )
+from scraper_jobs import VALID_SOURCES, create_job, get_job, run_scraper_direct
 from services.commute_service import (
     enrich_listings_with_commute,
     get_next_monday_830am_epoch,
@@ -30,7 +33,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
-# Limiter instance (shares storage_uri with the one in main.py via app.state.limiter)
 limiter = Limiter(key_func=get_remote_address)
 
 
@@ -148,6 +150,7 @@ async def search(
     min_bedrooms: Optional[float] = Query(None, description="Min bedrooms (0=studio)"),
     min_bathrooms: Optional[float] = Query(None, description="Min bathrooms"),
     pets_allowed: Optional[bool] = Query(None, description="Pets allowed filter"),
+    neighborhood: Optional[str] = Query(None, description="Neighborhood name (partial match)"),
     sources: Optional[str] = Query(None, description="Comma-separated source names"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, le=50, description="Results per page"),
@@ -161,17 +164,15 @@ async def search(
     When destination is provided, listings are ranked by commute time (default).
     Commute data is fetched from Redis/Postgres cache or Google Distance Matrix API.
     """
-    # Validate mode
     valid_modes = {"transit", "driving", "walking", "bicycling"}
     if mode not in valid_modes:
         mode = "transit"
 
     sources_list = [s.strip() for s in sources.split(",")] if sources else None
 
-    # Reject departure times in the past — Google Distance Matrix returns INVALID_REQUEST
     import time as _time
     if departure_epoch is not None and departure_epoch < int(_time.time()):
-        departure_epoch = None  # Fall back to peak-hour default
+        departure_epoch = None
 
     dep_epoch = departure_epoch or (get_next_monday_830am_epoch() if destination_lat else None)
 
@@ -187,6 +188,7 @@ async def search(
         "min_bedrooms": min_bedrooms,
         "min_bathrooms": min_bathrooms,
         "pets_allowed": pets_allowed,
+        "neighborhood": neighborhood,
         "sources": sources_list,
         "page": page,
         "page_size": page_size,
@@ -197,7 +199,6 @@ async def search(
 
     listing_dicts = [_row_to_listing_dict(r) for r in raw_listings]
 
-    # Enrich with commute data if destination provided and commute data not already in DB join
     if destination_lat is not None and destination_lng is not None:
         needs_enrichment = [
             ld for ld in listing_dicts
@@ -213,30 +214,73 @@ async def search(
                 pool,
                 redis,
             )
-            # Merge enriched back
             enriched_by_id = {e["id"]: e for e in enriched}
             for ld in listing_dicts:
                 if ld["id"] in enriched_by_id:
                     ld.update(enriched_by_id[ld["id"]])
 
-    # Build Pydantic objects
     listing_objs = [ListingWithCommute(**ld) for ld in listing_dicts]
 
     pages = max(1, (total + page_size - 1) // page_size)
 
-    # Determine source availability
-    all_sources = ["zillow", "apartments_com", "streeteasy", "facebook_marketplace"]
-    present_sources = list({ld["source"] for ld in listing_dicts})
-    unavailable = [s for s in all_sources if s not in present_sources]
+    # Report sources that are actually marked inactive in cs_sources, not derived from page results
+    async with pool.acquire() as conn:
+        source_rows = await conn.fetch("SELECT name, is_active FROM cs_sources")
+    active_sources = [r["name"] for r in source_rows if r["is_active"]]
+    inactive_sources = [r["name"] for r in source_rows if not r["is_active"]]
 
     return SearchResponse(
         listings=listing_objs,
         total=total,
         page=page,
         pages=pages,
-        sources_available=present_sources,
-        sources_unavailable=unavailable,
+        sources_available=active_sources,
+        sources_unavailable=inactive_sources,
     )
+
+
+@router.post("/refresh")
+@limiter.limit("2/minute")
+async def trigger_refresh(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    sources: Optional[str] = Query(None, description="Comma-separated sources; omit for all"),
+    city: str = Query("new-york"),
+    state: str = Query("ny"),
+    pool=Depends(get_pool),
+):
+    """
+    Public endpoint — trigger a live scrape in the background.
+    Rate limited to 2/minute per IP. No auth required.
+    Returns job IDs immediately; poll GET /listings/refresh/{job_id} for status.
+    """
+    if sources:
+        requested = [s.strip() for s in sources.split(",")]
+        to_scrape = [s for s in requested if s in VALID_SOURCES]
+    else:
+        to_scrape = list(VALID_SOURCES)
+
+    if not to_scrape:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail=f"No valid sources. Valid: {sorted(VALID_SOURCES)}")
+
+    jobs = []
+    for source in to_scrape:
+        job_id = create_job(source)
+        background_tasks.add_task(run_scraper_direct, job_id, source, city, state, pool)
+        jobs.append({"source": source, "job_id": job_id})
+
+    return {"jobs": jobs}
+
+
+@router.get("/refresh/{job_id}")
+async def refresh_status(job_id: str):
+    """Poll the status of a refresh (scrape) job."""
+    job = get_job(job_id)
+    if job is None:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
 
 
 @router.get("/{listing_id}", response_model=ListingDetail)
@@ -256,7 +300,7 @@ async def get_listing(
     """
     import time as _time
     if departure_epoch is not None and departure_epoch < int(_time.time()):
-        departure_epoch = None  # Fall back to peak-hour default
+        departure_epoch = None
     dep_epoch = departure_epoch or (get_next_monday_830am_epoch() if destination_lat else None)
 
     row = await get_listing_by_id(
@@ -273,7 +317,6 @@ async def get_listing(
 
     listing_dict = _row_to_listing_dict(row)
 
-    # Enrich if commute not in cache
     if (
         destination_lat is not None
         and destination_lng is not None
@@ -292,7 +335,6 @@ async def get_listing(
         if enriched:
             listing_dict = enriched[0]
 
-    # Add raw_metadata for detail view
     listing_dict["raw_metadata"] = row.get("raw_metadata")
 
     return ListingDetail(**listing_dict)

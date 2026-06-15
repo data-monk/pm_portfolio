@@ -100,8 +100,9 @@ export interface SearchFilters {
   min_price?: number;
   max_price?: number;
   min_bedrooms?: number;
-  bathrooms?: number;
+  min_bathrooms?: number;
   pets_allowed?: boolean;
+  neighborhood?: string;
   sources?: ListingSource[];
   page: number;
   sort: 'commute_asc' | 'price_asc' | 'price_desc' | 'newest';

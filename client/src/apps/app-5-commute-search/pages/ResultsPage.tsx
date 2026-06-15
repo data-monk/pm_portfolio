@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import type { SearchFilters } from '../lib/types';
 import { useListings } from '../hooks/useListings';
 import { useSaved } from '../hooks/useSaved';
 import { useCommute } from '../hooks/useCommute';
-import { getSourceHealth } from '../lib/api';
-import { searchParamsToFilters, filtersToSearchParams, formatDuration } from '../lib/utils';
+import { triggerRefresh, getRefreshStatus } from '../lib/api';
+import type { ScrapeJob } from '../lib/api';
+import { searchParamsToFilters, filtersToSearchParams, formatDuration, sourceLabel } from '../lib/utils';
 import ListingCard from '../components/ListingCard';
 import FilterPanel from '../components/FilterPanel';
 import MapView from '../components/MapView';
 
-type SourceHealth = { name: string; is_active: boolean; last_scraped_at: string | null };
+const SORT_LABELS: Record<string, string> = {
+  commute_asc: 'Commute',
+  price_asc: 'Price ↑',
+  price_desc: 'Price ↓',
+  newest: 'Newest',
+};
 
 function defaultFilters(): SearchFilters {
   return {
@@ -27,8 +34,8 @@ function defaultFilters(): SearchFilters {
 const ResultsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // Resolve filters: from nav state → URL params → defaults
   const [filters, setFilters] = useState<SearchFilters>(() => {
     const stateFilters = (location.state as { filters?: SearchFilters } | null)?.filters;
     if (stateFilters) return stateFilters;
@@ -43,9 +50,60 @@ const ResultsPage: React.FC = () => {
   const [dismissedBanners, setDismissedBanners] = useState<Set<string>>(new Set());
   const [selectedListingId, setSelectedListingId] = useState<string | undefined>(undefined);
 
+  // Live scraping state
+  const [scrapeJobs, setScrapeJobs] = useState<ScrapeJob[]>([]);
+  const [scrapeStatus, setScrapeStatus] = useState<'idle' | 'running' | 'done'>('idle');
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const didTriggerRef = useRef(false);
+
   const { listings: rawListings, total, isLoading, isError, sourcesUnavailable } = useListings(filters);
   const resolvedListings = useCommute(rawListings);
   const { savedCount, isSaved, saveListingId, removeSavedId } = useSaved();
+
+  // Trigger live scraping once on mount when destination is set
+  const triggerLiveScrape = useCallback(async () => {
+    if (didTriggerRef.current) return;
+    if (!filters.destination_lat) return;
+    didTriggerRef.current = true;
+    try {
+      const jobs = await triggerRefresh();
+      if (jobs.length > 0) {
+        setScrapeJobs(jobs);
+        setScrapeStatus('running');
+      }
+    } catch {
+      // silently ignore — DB results still show
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    triggerLiveScrape();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Poll job status until all done or failed
+  useEffect(() => {
+    if (scrapeStatus !== 'running' || scrapeJobs.length === 0) return;
+
+    pollRef.current = setInterval(async () => {
+      try {
+        const statuses = await Promise.all(scrapeJobs.map((j) => getRefreshStatus(j.job_id)));
+        const allSettled = statuses.every((s) => s.status === 'done' || s.status === 'failed');
+        if (allSettled) {
+          clearInterval(pollRef.current!);
+          setScrapeStatus('done');
+          // Invalidate listings query to pick up newly scraped results
+          queryClient.invalidateQueries({ queryKey: ['listings'] });
+        }
+      } catch {
+        clearInterval(pollRef.current!);
+        setScrapeStatus('done');
+      }
+    }, 8000);
+
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, [scrapeStatus, scrapeJobs, queryClient]);
 
   // Sync filters to URL
   useEffect(() => {
@@ -53,19 +111,6 @@ const ResultsPage: React.FC = () => {
     navigate({ search: params.toString() }, { replace: true, state: { filters } });
   }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch source health on mount
-  useEffect(() => {
-    getSourceHealth()
-      .then((sources: SourceHealth[]) => {
-        const unavailable = sources.filter((s) => !s.is_active).map((s) => s.name);
-        setUnavailableBanners(unavailable);
-      })
-      .catch(() => {
-        // silently ignore
-      });
-  }, []);
-
-  // Also surface from query data
   useEffect(() => {
     if (sourcesUnavailable.length > 0) {
       setUnavailableBanners((prev) => {
@@ -122,6 +167,18 @@ const ResultsPage: React.FC = () => {
       onRemove: () => handleFiltersChange({ min_bedrooms: undefined }),
     });
   }
+  if (filters.min_bathrooms !== undefined) {
+    chips.push({
+      label: `${filters.min_bathrooms}BA+`,
+      onRemove: () => handleFiltersChange({ min_bathrooms: undefined }),
+    });
+  }
+  if (filters.neighborhood) {
+    chips.push({
+      label: `📍 ${filters.neighborhood}`,
+      onRemove: () => handleFiltersChange({ neighborhood: undefined }),
+    });
+  }
   if (filters.pets_allowed) {
     chips.push({
       label: '🐾 Pets OK',
@@ -152,9 +209,11 @@ const ResultsPage: React.FC = () => {
       ? { lat: filters.destination_lat, lng: filters.destination_lng, label: filters.destination_label }
       : null;
 
-  // Determine has next page: total > resolved so far
   const currentCount = (filters.page ?? 1) * 20;
   const hasNextPage = total > currentCount;
+
+  // Scraping sources labels for status banner
+  const scrapingSourceNames = scrapeJobs.map((j) => sourceLabel(j.source)).join(', ');
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -184,6 +243,20 @@ const ResultsPage: React.FC = () => {
           {viewMode === 'list' ? '🗺 Map' : '☰ List'}
         </button>
       </nav>
+
+      {/* Live scraping status banner */}
+      {scrapeStatus === 'running' && (
+        <div className="flex items-center gap-3 px-4 py-2.5 bg-[rgba(0,212,255,0.06)] border-b border-[rgba(0,212,255,0.15)] text-[#00d4ff] text-sm" role="status">
+          <span className="animate-pulse">⟳</span>
+          <span>Fetching live listings from <strong>{scrapingSourceNames}</strong>…</span>
+        </div>
+      )}
+      {scrapeStatus === 'done' && (
+        <div className="flex items-center gap-3 px-4 py-2.5 bg-[rgba(74,222,128,0.06)] border-b border-[rgba(74,222,128,0.15)] text-green-400 text-sm">
+          <span>✓</span>
+          <span>Live listings updated from {scrapingSourceNames}</span>
+        </div>
+      )}
 
       {/* Unavailable source banners */}
       {unavailableBanners
@@ -232,20 +305,38 @@ const ResultsPage: React.FC = () => {
         )}
       </div>
 
-      {/* Results count */}
-      <div className="px-4 md:px-6 py-3 text-sm text-slate-400">
-        {isLoading ? (
-          <span className="cs-skeleton inline-block rounded w-40 h-4" aria-label="Loading results count" />
-        ) : isError ? (
-          <span className="text-red-400">Error loading listings</span>
-        ) : total === 0 ? (
-          <span>No listings found</span>
-        ) : (
-          <span>
-            Showing <strong className="text-slate-200">{resolvedListings.length}</strong> of{' '}
-            <strong className="text-slate-200">{total}</strong> listings
-          </span>
-        )}
+      {/* Results count + sort */}
+      <div className="px-4 md:px-6 py-3 flex items-center justify-between gap-4">
+        <div className="text-sm text-slate-400">
+          {isLoading ? (
+            <span className="cs-skeleton inline-block rounded w-40 h-4" aria-label="Loading results count" />
+          ) : isError ? (
+            <span className="text-red-400">Error loading listings</span>
+          ) : total === 0 ? (
+            <span>No listings found</span>
+          ) : (
+            <span>
+              Showing <strong className="text-slate-200">{resolvedListings.length}</strong> of{' '}
+              <strong className="text-slate-200">{total}</strong> listings
+            </span>
+          )}
+        </div>
+
+        {/* Sort dropdown */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <label htmlFor="sort-select" className="text-xs text-slate-500 hidden sm:block">Sort:</label>
+          <select
+            id="sort-select"
+            value={filters.sort}
+            onChange={(e) => handleFiltersChange({ sort: e.target.value as SearchFilters['sort'] })}
+            aria-label="Sort results"
+            className="px-2 py-1.5 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[#16161e] text-slate-300 text-xs outline-none focus:border-[#00d4ff] transition-colors"
+          >
+            {Object.entries(SORT_LABELS).map(([val, label]) => (
+              <option key={val} value={val}>{label}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Main content area */}
@@ -304,7 +395,9 @@ const ResultsPage: React.FC = () => {
               <p className="text-2xl mb-3" aria-hidden="true">🔍</p>
               <p className="text-slate-300 font-medium mb-2">No listings found</p>
               <p className="text-slate-500 text-sm mb-6">
-                Try adjusting your commute time or filters.
+                {scrapeStatus === 'running'
+                  ? 'Live listings are still being fetched — results will appear shortly.'
+                  : 'Try adjusting your commute time or filters.'}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button

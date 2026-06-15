@@ -7,6 +7,19 @@ import type {
 } from './types';
 import { MOCK_LISTINGS, MOCK_DESTINATION } from './mockData';
 
+export interface ScrapeJob {
+  source: string;
+  job_id: string;
+}
+
+export interface ScrapeJobStatus {
+  status: 'running' | 'done' | 'failed';
+  source: string;
+  new: number;
+  updated: number;
+  error: string | null;
+}
+
 const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) ?? 'http://localhost:8001';
 const USE_MOCK = (import.meta.env.VITE_USE_MOCK as string) === 'true';
 
@@ -124,9 +137,10 @@ export async function searchListings(filters: SearchFilters): Promise<SearchResp
   if (filters.max_transfers !== undefined) params.set('max_transfers', String(filters.max_transfers));
   if (filters.min_price !== undefined) params.set('min_price', String(filters.min_price));
   if (filters.max_price !== undefined) params.set('max_price', String(filters.max_price));
-  if (filters.min_bedrooms !== undefined) params.set('bedrooms', String(filters.min_bedrooms));
-  if (filters.bathrooms !== undefined) params.set('bathrooms', String(filters.bathrooms));
+  if (filters.min_bedrooms !== undefined) params.set('min_bedrooms', String(filters.min_bedrooms));
+  if (filters.min_bathrooms !== undefined) params.set('min_bathrooms', String(filters.min_bathrooms));
   if (filters.pets_allowed !== undefined) params.set('pets_allowed', String(filters.pets_allowed));
+  if (filters.neighborhood) params.set('neighborhood', filters.neighborhood);
   if (filters.sources) params.set('sources', filters.sources.join(','));
   params.set('page', String(filters.page ?? 1));
   params.set('sort', filters.sort);
@@ -208,6 +222,18 @@ export async function getSourceHealth(): Promise<SourceHealth[]> {
     ];
   }
   return apiFetch<SourceHealth[]>('/api/commute-search/admin/sources');
+}
+
+export async function triggerRefresh(sources?: string[]): Promise<ScrapeJob[]> {
+  if (USE_MOCK) return [];
+  const params = new URLSearchParams();
+  if (sources && sources.length > 0) params.set('sources', sources.join(','));
+  const data = await apiFetch<{ jobs: ScrapeJob[] }>(`/api/commute-search/listings/refresh?${params}`);
+  return data.jobs;
+}
+
+export async function getRefreshStatus(jobId: string): Promise<ScrapeJobStatus> {
+  return apiFetch<ScrapeJobStatus>(`/api/commute-search/listings/refresh/${jobId}`);
 }
 
 export { MOCK_DESTINATION };

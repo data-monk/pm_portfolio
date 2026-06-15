@@ -35,6 +35,13 @@ const BATHROOM_OPTIONS = [
   { label: '2+', value: 2 },
 ];
 
+const SORT_OPTIONS: { value: SearchFilters['sort']; label: string }[] = [
+  { value: 'commute_asc', label: 'Commute (shortest first)' },
+  { value: 'price_asc', label: 'Price (low to high)' },
+  { value: 'price_desc', label: 'Price (high to low)' },
+  { value: 'newest', label: 'Newest listings' },
+];
+
 const TRANSFER_OPTIONS = [
   { label: 'Any', value: undefined },
   { label: 'Direct', value: 0 },
@@ -73,9 +80,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       min_price: undefined,
       max_price: undefined,
       min_bedrooms: undefined,
-      bathrooms: undefined,
+      min_bathrooms: undefined,
       pets_allowed: undefined,
+      neighborhood: undefined,
       sources: undefined,
+      sort: 'commute_asc',
     };
     if (mode === 'sidebar') {
       onChange(reset);
@@ -201,15 +210,43 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <button
               key={String(opt.value)}
               type="button"
-              onClick={() => updateLocal({ bathrooms: opt.value })}
-              className={current.bathrooms === opt.value ? 'active' : ''}
-              aria-pressed={current.bathrooms === opt.value}
+              onClick={() => updateLocal({ min_bathrooms: opt.value })}
+              className={current.min_bathrooms === opt.value ? 'active' : ''}
+              aria-pressed={current.min_bathrooms === opt.value}
               aria-label={`Bathrooms: ${opt.label}`}
             >
               {opt.label}
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Neighborhood */}
+      <div>
+        <p className="text-sm font-medium text-slate-300 mb-2">Neighborhood</p>
+        <input
+          type="text"
+          placeholder="e.g. Upper West Side"
+          value={current.neighborhood ?? ''}
+          onChange={(e) => updateLocal({ neighborhood: e.target.value || undefined })}
+          aria-label="Filter by neighborhood"
+          className="w-full px-3 py-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] text-slate-200 text-sm outline-none focus:border-[#00d4ff] transition-colors placeholder:text-slate-600"
+        />
+      </div>
+
+      {/* Sort */}
+      <div>
+        <p className="text-sm font-medium text-slate-300 mb-2">Sort by</p>
+        <select
+          value={current.sort}
+          onChange={(e) => updateLocal({ sort: e.target.value as SearchFilters['sort'] })}
+          aria-label="Sort results by"
+          className="w-full px-3 py-2 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[#16161e] text-slate-200 text-sm outline-none focus:border-[#00d4ff] transition-colors"
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
       </div>
 
       {/* Pets */}

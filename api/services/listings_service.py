@@ -89,6 +89,13 @@ def _build_where_clauses(
         params.append(bool(pets_allowed))
         n += 1
 
+    # Neighborhood filter (case-insensitive partial match)
+    neighborhood = filters.get("neighborhood")
+    if neighborhood:
+        clauses.append(f"l.neighborhood ILIKE ${n}")
+        params.append(f"%{neighborhood}%")
+        n += 1
+
     # Source filter
     sources = filters.get("sources")
     if sources:

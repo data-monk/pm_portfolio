@@ -27,6 +27,7 @@ const SearchPage: React.FC = () => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [minBedrooms, setMinBedrooms] = useState<number | undefined>(undefined);
+  const [neighborhood, setNeighborhood] = useState('');
   const [destinationError, setDestinationError] = useState('');
 
   const handleSelect = (place: { label: string; lat: number; lng: number }) => {
@@ -57,6 +58,7 @@ const SearchPage: React.FC = () => {
       min_price: minPrice ? parseInt(minPrice, 10) : undefined,
       max_price: maxPrice ? parseInt(maxPrice, 10) : undefined,
       min_bedrooms: minBedrooms,
+      neighborhood: neighborhood || undefined,
       page: 1,
       sort: 'commute_asc',
     };
@@ -169,6 +171,21 @@ const SearchPage: React.FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* Neighborhood */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Neighborhood <span className="text-slate-500 font-normal">(optional)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Upper West Side, Williamsburg, Astoria"
+              value={neighborhood}
+              onChange={(e) => setNeighborhood(e.target.value)}
+              aria-label="Filter by neighborhood"
+              className="w-full px-3 py-2.5 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] text-slate-200 text-sm outline-none focus:border-[#00d4ff] transition-colors placeholder:text-slate-600"
+            />
           </div>
 
           {/* Search CTA */}

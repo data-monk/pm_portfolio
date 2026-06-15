@@ -17,7 +17,7 @@ export function useListings(filters: SearchFilters): UseListingsReturn {
     queryKey: ['listings', filters],
     queryFn: () => searchListings(filters),
     placeholderData: keepPreviousData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30 * 1000, // 30s — short so scrape invalidation triggers a real refetch
     enabled:
       filters.destination_lat !== null &&
       filters.destination_lng !== null &&

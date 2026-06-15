@@ -1,25 +1,22 @@
 """
-Admin router — POST /admin/scrape, GET /admin/sources
+Admin router — POST /admin/scrape, POST /admin/scrape-direct, GET /admin/sources
 """
-from __future__ import annotations
-
 import logging
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 from config import settings
 from db.connection import get_pool
 from db.queries import GET_SOURCE_HEALTH
+from scraper_jobs import VALID_SOURCES, create_job, get_job, run_scraper_direct
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 limiter = Limiter(key_func=get_remote_address)
-
-VALID_SOURCES = {"apartments_com", "streeteasy", "zillow", "facebook_marketplace"}
 
 
 def _verify_admin(x_admin_secret: str) -> None:
@@ -110,3 +107,40 @@ async def get_source_health(
         })
 
     return {"sources": sources}
+
+
+@router.post("/scrape-direct")
+@limiter.limit("2/minute")
+async def scrape_direct(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    source: str = Query(..., description="Source name to scrape"),
+    city: str = Query("new-york"),
+    state: str = Query("ny"),
+    x_admin_secret: str = Header(..., alias="X-Admin-Secret"),
+    pool=Depends(get_pool),
+):
+    """
+    Run a scraper in-process as an asyncio background task — no Celery needed.
+    Returns job_id immediately; poll GET /admin/scrape-direct/{job_id} for status.
+    """
+    _verify_admin(x_admin_secret)
+
+    if source not in VALID_SOURCES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid source '{source}'. Valid: {sorted(VALID_SOURCES)}",
+        )
+
+    job_id = create_job(source)
+    background_tasks.add_task(run_scraper_direct, job_id, source, city, state, pool)
+    return {"job_id": job_id, "source": source, "status": "running"}
+
+
+@router.get("/scrape-direct/{job_id}")
+async def scrape_direct_status(job_id: str):
+    """Poll the status of a direct scrape job."""
+    job = get_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job

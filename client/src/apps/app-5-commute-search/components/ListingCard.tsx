@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ListingWithCommute } from '../lib/types';
 import CommuteTimeBadge from './CommuteTimeBadge';
-import { formatPrice, formatListingMeta, sourceAbbreviation, sourceColor } from '../lib/utils';
+import { formatPrice, formatListingMeta, sourceAbbreviation, sourceColor, sourceLabel } from '../lib/utils';
 
 interface ListingCardProps {
   listing: ListingWithCommute;
@@ -164,6 +164,21 @@ const ListingCard: React.FC<ListingCardProps> = ({
               })}
             </span>
           </p>
+        )}
+
+        {/* View original listing */}
+        {listing.listing_url && (
+          <a
+            href={listing.listing_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`View on ${sourceLabel(listing.source)}`}
+            className="mt-1 flex items-center justify-center gap-1.5 w-full py-2 rounded-lg border border-[rgba(255,255,255,0.1)] text-xs text-slate-400 hover:border-[#00d4ff] hover:text-[#00d4ff] transition-colors"
+          >
+            <span aria-hidden="true">↗</span>
+            View on {sourceLabel(listing.source)}
+          </a>
         )}
       </div>
     </article>
