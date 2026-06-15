@@ -36,6 +36,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      GOOGLE_MAPS_BROWSER_KEY: ${GOOGLE_MAPS_BROWSER_KEY}
     volumes:
       - db_data:/data
     expose:
