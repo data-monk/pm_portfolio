@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { ListingWithCommute } from '../lib/types';
 import { formatPrice, getCommutePinColor } from '../lib/utils';
 import CommuteTimeBadge from './CommuteTimeBadge';
+import { getCachedConfig } from '../lib/clientConfig';
 
 interface Destination {
   lat: number;
@@ -16,7 +17,7 @@ interface MapViewProps {
   selectedListingId?: string;
 }
 
-const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY as string | undefined;
+const MAPS_API_KEY = getCachedConfig().googleMapsBrowserKey || undefined;
 
 // Placeholder when no API key is configured
 function MapPlaceholder(): React.ReactElement {
@@ -27,7 +28,7 @@ function MapPlaceholder(): React.ReactElement {
         Map view requires Google Maps API key
       </p>
       <p className="text-slate-500 text-sm mt-2 text-center px-6">
-        Set <code className="text-[#00d4ff] bg-[rgba(0,212,255,0.1)] px-1 rounded">VITE_GOOGLE_MAPS_KEY</code> to enable the interactive map
+        Set <code className="text-[#00d4ff] bg-[rgba(0,212,255,0.1)] px-1 rounded">GOOGLE_MAPS_BROWSER_KEY</code> in server/.env to enable the interactive map
       </p>
     </div>
   );

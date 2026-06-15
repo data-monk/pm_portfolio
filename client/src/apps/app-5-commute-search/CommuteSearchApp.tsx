@@ -1,6 +1,7 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { getClientConfig } from './lib/clientConfig';
 import './commuteSearch.css';
 
 const SearchPage = lazy(() => import('./pages/SearchPage'));
@@ -23,20 +24,30 @@ const AppLoading: React.FC = () => (
   </div>
 );
 
-const CommuteSearchApp: React.FC = () => (
-  <QueryClientProvider client={queryClient}>
-    <div className="cs-app">
-      <Suspense fallback={<AppLoading />}>
-        <Routes>
-          <Route path="/" element={<SearchPage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/listing/:id" element={<ListingDetailPage />} />
-          <Route path="/saved" element={<SavedListingsPage />} />
-          <Route path="*" element={<Navigate to="." replace />} />
-        </Routes>
-      </Suspense>
-    </div>
-  </QueryClientProvider>
-);
+const CommuteSearchApp: React.FC = () => {
+  const [configReady, setConfigReady] = useState(false);
+
+  useEffect(() => {
+    getClientConfig().then(() => setConfigReady(true));
+  }, []);
+
+  if (!configReady) return <AppLoading />;
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div className="cs-app">
+        <Suspense fallback={<AppLoading />}>
+          <Routes>
+            <Route path="/" element={<SearchPage />} />
+            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/listing/:id" element={<ListingDetailPage />} />
+            <Route path="/saved" element={<SavedListingsPage />} />
+            <Route path="*" element={<Navigate to="." replace />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </QueryClientProvider>
+  );
+};
 
 export default CommuteSearchApp;

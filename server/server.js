@@ -32,6 +32,13 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
+// Public client config — only non-secret, browser-safe values
+app.get('/api/config', (req, res) => {
+  res.json({
+    googleMapsBrowserKey: process.env.GOOGLE_MAPS_BROWSER_KEY || '',
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })

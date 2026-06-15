@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { getCachedConfig } from '../lib/clientConfig';
 
 interface PlaceSuggestion {
   label: string;
@@ -20,7 +21,7 @@ const MOCK_SUGGESTIONS: PlaceSuggestion[] = [
   { label: 'Brooklyn Navy Yard, Brooklyn, NY', lat: 40.6983, lng: -73.9715 },
 ];
 
-const PLACES_API_KEY = import.meta.env.VITE_PLACES_API_KEY as string | undefined;
+const PLACES_API_KEY = getCachedConfig().googleMapsBrowserKey || undefined;
 
 const DestinationInput: React.FC<DestinationInputProps> = ({
   value,

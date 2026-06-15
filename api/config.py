@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 from pydantic_settings import BaseSettings
+
+# Resolve server/.env relative to this file: api/ → ../server/.env
+_SERVER_ENV = Path(__file__).resolve().parent.parent / "server" / ".env"
 
 
 class Settings(BaseSettings):
@@ -14,7 +20,7 @@ class Settings(BaseSettings):
     admin_secret: str = ""
 
     model_config = {
-        "env_file": ".env",
+        "env_file": str(_SERVER_ENV),
         "case_sensitive": False,
         "extra": "ignore",
     }

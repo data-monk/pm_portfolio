@@ -4,12 +4,12 @@ Admin router — POST /admin/scrape, GET /admin/sources
 from __future__ import annotations
 
 import logging
-import os
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from config import settings
 from db.connection import get_pool
 from db.queries import GET_SOURCE_HEALTH
 
@@ -23,14 +23,12 @@ VALID_SOURCES = {"apartments_com", "streeteasy", "zillow", "facebook_marketplace
 
 
 def _verify_admin(x_admin_secret: str) -> None:
-    """Raise 403 if admin secret header does not match configured value."""
-    expected = os.getenv("ADMIN_SECRET", "")
-    if not expected:
+    if not settings.admin_secret:
         raise HTTPException(
             status_code=503,
-            detail="Admin secret not configured on server — set ADMIN_SECRET env var",
+            detail="Admin secret not configured — set ADMIN_SECRET in server/.env",
         )
-    if x_admin_secret != expected:
+    if x_admin_secret != settings.admin_secret:
         raise HTTPException(status_code=403, detail="Invalid admin secret")
 
 
