@@ -18,10 +18,16 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-56 flex-shrink-0 bg-surface-card border-r border-surface-border min-h-screen flex flex-col">
+    <aside className="w-56 flex-shrink-0 min-h-screen flex flex-col border-r border-surface-border"
+      style={{ background: '#0d1a1e' }}>
       <div className="p-5 border-b border-surface-border">
-        <p className="text-xs font-bold tracking-widest text-neon-blue uppercase">RaaS Admin</p>
-        <p className="text-slate-400 text-xs mt-1 truncate">{user?.email}</p>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#0891B2' }} />
+          <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#0891B2' }}>
+            RaaS Admin
+          </p>
+        </div>
+        <p className="text-slate-400 text-xs mt-1 truncate pl-4">{user?.email}</p>
       </div>
 
       <nav className="flex-1 p-3 space-y-1">
@@ -33,9 +39,13 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `block px-3 py-2 rounded-lg text-sm transition-colors ${
                 isActive
-                  ? 'bg-neon-blue/10 text-neon-blue font-medium'
+                  ? 'font-medium'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`
+            }
+            style={({ isActive }) => isActive
+              ? { color: '#0891B2', background: 'rgba(14,116,144,0.12)' }
+              : {}
             }
           >
             {link.label}
@@ -47,10 +57,12 @@ export default function Sidebar() {
             to="/apps/raas/research"
             className={({ isActive }) =>
               `block px-3 py-2 rounded-lg text-sm transition-colors ${
-                isActive
-                  ? 'bg-neon-purple/10 text-neon-purple font-medium'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                isActive ? 'font-medium' : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`
+            }
+            style={({ isActive }) => isActive
+              ? { color: '#0891B2', background: 'rgba(14,116,144,0.12)' }
+              : {}
             }
           >
             Research

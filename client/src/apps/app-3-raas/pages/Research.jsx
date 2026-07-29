@@ -56,11 +56,11 @@ export default function Research() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       {/* Top bar */}
-      <header className="border-b border-surface-border px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-surface-border px-6 py-4 flex items-center justify-between" style={{ background: '#0d1a1e' }}>
         <div>
-          <p className="text-xs font-bold tracking-widest text-neon-purple uppercase">RAG as a Service</p>
+          <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#0891B2' }}>RAG as a Service</p>
           <h1 className="text-lg font-bold text-white">Research</h1>
         </div>
         <div className="flex items-center gap-4">
@@ -86,7 +86,7 @@ export default function Research() {
             <select
               value={selectedPromptId}
               onChange={(e) => setSelectedPromptId(e.target.value)}
-              className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-purple"
+              className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:outline-none"
             >
               <option value="">— Use default —</option>
               {prompts.map((p) => (
@@ -106,13 +106,14 @@ export default function Research() {
                 rows={4}
                 required
                 placeholder="Ask anything about your knowledge base…"
-                className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-purple resize-none"
+                className="w-full bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:outline-none resize-none"
               />
             </div>
             <button
               type="submit"
               disabled={loading || !query.trim()}
-              className="w-full py-2.5 rounded-lg bg-neon-purple text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full py-2.5 rounded-lg text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              style={{ background: '#0E7490' }}
             >
               {loading ? 'Searching & generating…' : 'Run Research'}
             </button>

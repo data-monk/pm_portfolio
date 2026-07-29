@@ -42,8 +42,9 @@ export default function AdminDashboard() {
   const stats = driveStatus?.docStats ?? {}
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 min-h-screen bg-surface">
       <div>
+        <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: '#0891B2' }}>RaaS Admin</p>
         <h1 className="text-2xl font-bold text-white mb-1">Dashboard</h1>
         <p className="text-slate-400 text-sm">
           {driveStatus?.connected
@@ -60,7 +61,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Ready" value={stats.READY ?? 0} color="text-emerald-400" />
         <StatCard label="Pending" value={stats.PENDING ?? 0} color="text-yellow-400" />
-        <StatCard label="Ingesting" value={stats.INGESTING ?? 0} color="text-neon-blue" />
+        <StatCard label="Ingesting" value={stats.INGESTING ?? 0} color="text-raas-light" />
         <StatCard label="Errors" value={stats.ERROR ?? 0} color="text-red-400" />
       </div>
 

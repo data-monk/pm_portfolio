@@ -7,19 +7,41 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'ui-sans-serif', 'system-ui'],
       },
       colors: {
-        // Portfolio dark theme tokens
+        // ANZ blue + white theme tokens
+        anz: {
+          blue:    '#007DC3',
+          navy:    '#003D66',
+          ink:     '#1A2B3C',
+          muted:   '#7A8FA0',
+          surface: '#F2F7FC',
+          border:  '#D0DDE8',
+        },
+        // RaaS teal theme tokens
+        raas: {
+          teal:   '#0E7490',
+          light:  '#0891B2',
+          glow:   'rgba(14,116,144,0.15)',
+          border: 'rgba(14,116,144,0.25)',
+        },
+        // Legacy dark-theme tokens (used by sub-apps)
         neon: {
           blue: '#00d4ff',
           purple: '#a855f7',
           silver: '#c0c0d0',
         },
+        amber: {
+          DEFAULT: '#e89419',
+          dim: '#7a4f0c',
+        },
+        frost: '#dde3ed',
+        mist: '#6b7591',
         surface: {
-          DEFAULT: '#0f0f13',
-          card: '#16161e',
-          border: '#1e1e2e',
+          DEFAULT: '#08080d',
+          card: '#111118',
+          border: '#1c1c28',
         },
         // Violet-crumbs shadcn CSS variable tokens
         border: 'hsl(var(--border))',
@@ -79,6 +101,9 @@ export default {
       boxShadow: {
         glow: '0 0 20px rgba(0, 212, 255, 0.15)',
         'glow-purple': '0 0 20px rgba(168, 85, 247, 0.15)',
+        'glow-amber': '0 0 20px rgba(232, 148, 25, 0.2)',
+        'card':        '0 1px 3px rgba(0, 61, 102, 0.08), 0 4px 16px rgba(0, 61, 102, 0.06)',
+        'card-hover':  '0 4px 12px rgba(0, 61, 102, 0.12), 0 12px 32px rgba(0, 61, 102, 0.10)',
       },
       backdropBlur: {
         xs: '2px',
