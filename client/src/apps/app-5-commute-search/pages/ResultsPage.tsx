@@ -239,13 +239,24 @@ const ResultsPage: React.FC = () => {
       {/* Top bar */}
       <nav className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(15,15,19,0.95)] backdrop-blur-sm sticky top-0 z-20">
         <Link
+          to="/"
+          className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors group flex-shrink-0"
+          aria-label="Back to portfolio"
+        >
+          <svg className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Portfolio
+        </Link>
+        <span className="text-slate-700 text-xs">|</span>
+        <Link
           to="/apps/commute-search"
-          className="text-slate-400 hover:text-slate-200 transition-colors text-sm flex items-center gap-1 mr-1"
+          className="text-slate-400 hover:text-slate-200 transition-colors text-sm flex items-center gap-1 flex-shrink-0"
           aria-label="Back to search"
         >
-          ← Back
+          ← Search
         </Link>
-        <span className="text-base font-bold gradient-text flex-1 min-w-0 truncate">CommuteFirst</span>
+        <span className="text-base font-bold gradient-text flex-1 min-w-0 truncate text-center">CommuteFirst</span>
         <Link
           to="/apps/commute-search/saved"
           className="text-sm text-slate-400 hover:text-[#00d4ff] transition-colors flex-shrink-0"

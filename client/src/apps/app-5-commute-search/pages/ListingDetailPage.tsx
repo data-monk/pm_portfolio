@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import type { SearchFilters } from '../lib/types';
 import type { ListingDetail } from '../lib/api';
 import { getListingById } from '../lib/api';
@@ -97,15 +97,26 @@ const ListingDetailPage: React.FC = () => {
     <div className="min-h-screen">
       {/* Back bar */}
       <nav className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(15,15,19,0.95)] backdrop-blur-sm sticky top-0 z-20">
+        <Link
+          to="/"
+          className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors group flex-shrink-0"
+          aria-label="Back to portfolio"
+        >
+          <svg className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Portfolio
+        </Link>
+        <span className="text-slate-700 text-xs">|</span>
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="text-slate-400 hover:text-slate-200 transition-colors text-sm flex items-center gap-1"
+          className="text-slate-400 hover:text-slate-200 transition-colors text-sm flex items-center gap-1 flex-shrink-0"
           aria-label="Back to results"
         >
-          ← Back to Results
+          ← Results
         </button>
-        <span className="text-base font-bold gradient-text flex-1 truncate">CommuteFirst</span>
+        <span className="text-base font-bold gradient-text flex-1 truncate text-center">CommuteFirst</span>
         <button
           type="button"
           onClick={handleSaveToggle}

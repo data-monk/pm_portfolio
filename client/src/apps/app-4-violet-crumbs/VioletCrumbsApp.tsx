@@ -1,5 +1,5 @@
 import './violet-crumbs.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@vc/components/ui/tooltip';
 import { Toaster } from '@vc/components/ui/toaster';
@@ -21,6 +21,17 @@ const queryClient = new QueryClient();
 // The parent route in App.jsx should be:  <Route path="/apps/violet-crumbs/*" element={<VioletCrumbsApp />} />
 const VioletCrumbsApp = () => (
   <div className="vc-app min-h-screen">
+    {/* Floating back-to-portfolio chip */}
+    <Link
+      to="/"
+      className="fixed top-3 left-3 z-[100] flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-opacity hover:opacity-80"
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+    >
+      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+      </svg>
+      Portfolio
+    </Link>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />

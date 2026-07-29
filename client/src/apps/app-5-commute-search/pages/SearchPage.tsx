@@ -70,7 +70,18 @@ const SearchPage: React.FC = () => {
     <div className="min-h-screen flex flex-col">
       {/* Navbar strip */}
       <nav className="flex items-center justify-between px-4 md:px-8 py-4 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(15,15,19,0.9)] backdrop-blur-sm sticky top-0 z-10">
-        <span className="text-xl font-bold gradient-text">CommuteFirst</span>
+        <div className="flex items-center gap-5">
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors group"
+          >
+            <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Portfolio
+          </Link>
+          <span className="text-xl font-bold gradient-text">CommuteFirst</span>
+        </div>
         <Link
           to="/apps/commute-search/saved"
           className="text-sm text-slate-400 hover:text-[#00d4ff] transition-colors"

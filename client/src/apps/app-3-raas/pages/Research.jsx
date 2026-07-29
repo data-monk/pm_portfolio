@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import SourceCitation from '../components/SourceCitation'
 
@@ -59,9 +60,20 @@ export default function Research() {
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top bar */}
       <header className="border-b border-surface-border px-6 py-4 flex items-center justify-between" style={{ background: '#0d1a1e' }}>
-        <div>
-          <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#0891B2' }}>RAG as a Service</p>
-          <h1 className="text-lg font-bold text-white">Research</h1>
+        <div className="flex items-center gap-6">
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors duration-200 group"
+          >
+            <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Portfolio
+          </Link>
+          <div>
+            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#0891B2' }}>RAG as a Service</p>
+            <h1 className="text-lg font-bold text-white">Research</h1>
+          </div>
         </div>
         <div className="flex items-center gap-4">
           {user?.role === 'ADMIN' && (

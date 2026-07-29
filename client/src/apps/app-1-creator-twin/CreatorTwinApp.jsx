@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import ContextDrawer from './components/ContextDrawer'
 import ViewTabStrip from './components/ViewTabStrip'
 import FollowerView from './views/FollowerView'
@@ -157,12 +158,28 @@ export default function CreatorTwinApp() {
 
   return (
     <div className="min-h-screen bg-surface text-white">
-      {/* Page header */}
-      <div className="max-w-5xl mx-auto px-4 pt-8 pb-4">
+      {/* App top bar */}
+      <header className="sticky top-0 z-50 bg-surface-card border-b border-surface-border">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors duration-200 group"
+          >
+            <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Portfolio
+          </Link>
+          <span className="text-sm font-semibold gradient-text">EngageAI</span>
+          <div className="w-24" />
+        </div>
+      </header>
+
+      {/* App description */}
+      <div className="max-w-5xl mx-auto px-4 pt-6 pb-4">
         <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-1">EngageAI for Creators</h1>
         <p className="text-slate-400 text-sm max-w-xl">
-          EngageAI is your AI-powered engagement assistant.<br />
-          It reads your content, learns your tone, and helps you respond to comments in a way that feels authentic—saving time while boosting audience connection and growth.
+          AI-powered engagement assistant that reads your content, learns your tone, and helps you respond to comments authentically — saving time while boosting audience connection.
         </p>
       </div>
 

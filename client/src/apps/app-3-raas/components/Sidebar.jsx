@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const adminLinks = [
@@ -20,7 +20,17 @@ export default function Sidebar() {
   return (
     <aside className="w-56 flex-shrink-0 min-h-screen flex flex-col border-r border-surface-border"
       style={{ background: '#0d1a1e' }}>
-      <div className="p-5 border-b border-surface-border">
+      {/* Back to portfolio */}
+      <div className="px-4 pt-4 pb-3 border-b border-surface-border">
+        <Link
+          to="/"
+          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors duration-200 group mb-4"
+        >
+          <svg className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Portfolio
+        </Link>
         <div className="flex items-center gap-2 mb-1">
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#0891B2' }} />
           <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#0891B2' }}>
